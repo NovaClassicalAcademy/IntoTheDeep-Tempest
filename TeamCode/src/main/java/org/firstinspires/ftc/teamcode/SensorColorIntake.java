@@ -114,6 +114,8 @@ public class SensorColorIntake extends LinearOpMode {
     ServoRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
+
+
     try {
       runSample(); // actually execute the sample
     } finally {
@@ -256,6 +258,7 @@ public class SensorColorIntake extends LinearOpMode {
       else {
         ServoLeft.setPower(-ServoPower);
         ServoRight.setPower(-ServoPower);
+        sleep(2000);
 
       }
     }
