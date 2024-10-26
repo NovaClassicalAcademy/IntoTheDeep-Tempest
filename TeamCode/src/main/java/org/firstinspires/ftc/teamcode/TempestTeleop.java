@@ -9,20 +9,21 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name = "TestClawIntake", group = "TeleOp")
+@TeleOp(name = "TempestTeleop", group = "TeleOp")
 
 public class TempestTeleop extends OpMode {
-  /*DcMotor FrontLeft;
+  DcMotor FrontLeft;
   DcMotor FrontRight;
   DcMotor BackLeft;
   DcMotor BackRight;
 
-   */
 
   Servo ServoLeft;
   Servo ServoRight;
 
   //double ServoPower = 0.5;
+
+  Servo ServoOne;
 
 
 
@@ -37,7 +38,7 @@ public class TempestTeleop extends OpMode {
   @Override
   public void init() {
     telemetry.addData("Status", "Initialized");
-/*
+
     FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
     FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
 
@@ -50,14 +51,13 @@ public class TempestTeleop extends OpMode {
     BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
- */
-
-    ServoLeft = hardwareMap.get(Servo.class, "servoLeft");
-    ServoRight = hardwareMap.get(Servo.class, "servoRight");
 
 
-   // ServoLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-    //ServoRight.setDirection(DcMotorSimple.Direction.FORWARD);
+    ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
+    ServoRight = hardwareMap.get(Servo.class, "ServoClawRight");
+
+
+
 
 
 
@@ -86,7 +86,7 @@ public class TempestTeleop extends OpMode {
    */
   @Override
   public void loop() {
-    /*double FL_power = (gamepad1.left_stick_y - gamepad1.left_stick_x)/2;
+    double FL_power = (gamepad1.left_stick_y - gamepad1.left_stick_x)/2;
     FrontLeft.setPower(FL_power);
 
     double FR_power = (gamepad1.right_stick_y + gamepad1.right_stick_x)/2;
@@ -98,32 +98,42 @@ public class TempestTeleop extends OpMode {
     double BR_power = (gamepad1.right_stick_y - gamepad1.right_stick_x)/2;
     BackRight.setPower(BR_power);
 
-*/
+
 
     telemetry.addData("right trigger", gamepad1.right_trigger);
     telemetry.addData("left trigger", gamepad1.left_trigger);
     telemetry.update();
 
+    //middle
+   /* if (gamepad1.left_trigger > 0.2) {
+      ServoLeft.setPosition(0.5);
+      ServoRight.setPosition(0.5);
+
+
+    }
+    */
+
+    //full closed
     if (gamepad1.left_trigger > 0.2) {
-      ServoLeft.setPosition(0.25);
-      ServoRight.setPosition(0.25);
+      ServoLeft.setPosition(0.44);
+      ServoRight.setPosition(0.56);
 
-
-
-      
     }
-    /*
 
-    if (gamepad1.right_trigger > 0.2) {
+    //full open
+    else if (gamepad1.right_trigger > 0.2) {
       ServoLeft.setPosition(0);
-      ServoRight.setPosition(0);
+      ServoRight.setPosition(1);
     }
 
 
-     */
+    
+
+
 
 
   }
+
 
   /*
    * Code to run ONCE after the driver hits STOPp
