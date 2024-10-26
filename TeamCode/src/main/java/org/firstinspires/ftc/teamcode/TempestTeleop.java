@@ -56,7 +56,7 @@ public class TempestTeleop extends OpMode {
     LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
 
     LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-    LiftRight.setDirection((DcMotorSimple.Direction.REVERSE);
+    LiftRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
     ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
