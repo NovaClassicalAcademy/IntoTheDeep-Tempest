@@ -18,13 +18,17 @@ public class TempestTeleop extends OpMode {
   DcMotor BackLeft;
   DcMotor BackRight;
 
+  DcMotor LiftLeft;
+  DcMotor LiftRight;
+  Double Lift_power = 0.5;
 
   Servo ServoLeft;
   Servo ServoRight;
 
-  //double ServoPower = 0.5
   Servo ServoHingeLeft;
   Servo ServoHingeRight;
+
+  Servo ServoDump;
 
   /*
    * Code to run ONCE when the driver hits INIT
@@ -48,8 +52,17 @@ public class TempestTeleop extends OpMode {
     BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+    LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
+    LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
+
+    LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+    LiftRight.setDirection((DcMotorSimple.Direction.REVERSE);
+
+
     ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
     ServoRight = hardwareMap.get(Servo.class, "ServoClawRight");
+
+    ServoDump = hardwareMap.get(Servo.class, "ServoDump");
 
     // Tell the driver that initialization is complete.
     telemetry.addData("Status", "Initialized");
@@ -88,6 +101,15 @@ public class TempestTeleop extends OpMode {
     BackRight.setPower(BR_power);
 
 
+    //iffy that this works idk if Im using WHILE correct and if the values for my powers are correct
+    while (gamepad1.dpad_up){
+      LiftLeft.setPower(Lift_power);
+      LiftRight.setPower(Lift_power);
+    }
+    while (gamepad1.dpad_down){
+      LiftLeft.setPower(-Lift_power);
+      LiftRight.setPower(-Lift_power);
+    }
 
     telemetry.addData("right trigger", gamepad1.right_trigger);
     telemetry.addData("left trigger", gamepad1.left_trigger);
@@ -120,6 +142,20 @@ public class TempestTeleop extends OpMode {
       ServoHingeRight.setPosition(0.6);
       ServoHingeLeft.setPosition(0.4);
     }
+
+    //Need to find out where the servo is at tho so figure out where 1 is and where 0 is
+    if (gamepad1.y){
+      ServoDump.setPosition(1);
+    }
+    else if (gamepad1.x){
+      ServoDump.setPosition(0);
+    }
+
+
+
+
+
+
   }
 
 
