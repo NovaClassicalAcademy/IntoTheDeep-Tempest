@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name = "TestClawIntake", group = "TeleOp")
+@TeleOp(name = "TempestTeleop", group = "TeleOp")
 
 public class TempestTeleop extends OpMode {
   DcMotor FrontLeft;
@@ -22,15 +22,9 @@ public class TempestTeleop extends OpMode {
   Servo ServoLeft;
   Servo ServoRight;
 
-  //double ServoPower = 0.5;
-
+  //double ServoPower = 0.5
   Servo ServoHingeLeft;
   Servo ServoHingeRight;
-
-
-
-
-
 
   /*
    * Code to run ONCE when the driver hits INIT
@@ -99,14 +93,6 @@ public class TempestTeleop extends OpMode {
     telemetry.addData("left trigger", gamepad1.left_trigger);
     telemetry.update();
 
-    //middle
-    /* if (gamepad1.left_trigger > 0.2){
-      ServoLeft.setPosition(0.5);
-      ServoRight.setPosition(0.5);
-
-    }
-    */
-
     //full closed
     if (gamepad1.right_bumper) {
       ServoLeft.setPosition(0.44);
@@ -135,6 +121,7 @@ public class TempestTeleop extends OpMode {
       ServoHingeLeft.setPosition(0.4);
     }
   }
+
 
   /*
    * Code to run ONCE after the driver hits STOPp
