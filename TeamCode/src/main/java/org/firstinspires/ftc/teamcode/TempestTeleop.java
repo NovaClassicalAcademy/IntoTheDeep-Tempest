@@ -24,7 +24,8 @@ public class TempestTeleop extends OpMode {
 
   //double ServoPower = 0.5;
 
-  Servo ServoOne;
+  Servo ServoHingeLeft;
+  Servo ServoHingeRight;
 
 
 
@@ -38,6 +39,9 @@ public class TempestTeleop extends OpMode {
   public void init() {
     telemetry.addData("Status", "Initialized");
 
+    ServoHingeLeft =hardwareMap.get(Servo.class,"HingeLeft");
+    ServoHingeRight =hardwareMap.get(Servo.class,"HingeRight");
+
     FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
     FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
 
@@ -50,18 +54,8 @@ public class TempestTeleop extends OpMode {
     BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-
     ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
     ServoRight = hardwareMap.get(Servo.class, "ServoClawRight");
-
-
-
-   // ServoLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-    //ServoRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-
 
     // Tell the driver that initialization is complete.
     telemetry.addData("Status", "Initialized");
@@ -114,23 +108,32 @@ public class TempestTeleop extends OpMode {
     */
 
     //full closed
-    if (gamepad1.right_trigger > 0.2) {
+    if (gamepad1.right_bumper) {
       ServoLeft.setPosition(0.44);
       ServoRight.setPosition(0.56);
 
     }
 
     //full open
-    else if (gamepad1.right_bumper) {
+    else if (gamepad1.left_bumper) {
       ServoLeft.setPosition(0);
       ServoRight.setPosition(1);
 
     }
 
-  
+    if (gamepad1.right_trigger > 0.2) {
+      ServoHingeRight.setPosition(0.7);
+      ServoHingeLeft.setPosition(0.3);
 
-
-
+    }
+    else if (gamepad1.left_trigger > 0.2) {
+      ServoHingeRight.setPosition(0.3);
+      ServoHingeLeft.setPosition(0.7);
+    }
+    else if (gamepad1.a) {
+      ServoHingeRight.setPosition(0.6);
+      ServoHingeLeft.setPosition(0.4);
+    }
   }
 
   /*
