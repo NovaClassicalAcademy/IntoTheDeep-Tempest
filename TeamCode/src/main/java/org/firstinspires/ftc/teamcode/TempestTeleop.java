@@ -20,7 +20,7 @@ public class TempestTeleop extends OpMode {
 
   DcMotor LiftLeft;
   DcMotor LiftRight;
-  Double Lift_power = 0.5;
+  Double Lift_power = 0.84;
 
   Servo ServoLeft;
   Servo ServoRight;
@@ -42,7 +42,6 @@ public class TempestTeleop extends OpMode {
 
     FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
     FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
-
     BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
     BackRight = hardwareMap.get(DcMotor.class, "BackRight");
 
@@ -54,6 +53,8 @@ public class TempestTeleop extends OpMode {
 
     LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
     LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
+    LiftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    LiftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     LiftRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -88,68 +89,87 @@ public class TempestTeleop extends OpMode {
    */
   @Override
   public void loop() {
+
+   //panning motion
     double FL_power = (gamepad1.left_stick_y - gamepad1.left_stick_x)/2;
-    FrontLeft.setPower(FL_power);
-
-    double FR_power = (gamepad1.right_stick_y + gamepad1.right_stick_x)/2;
-    FrontRight.setPower(FR_power);
-
     double BL_power = (gamepad1.left_stick_y + gamepad1.left_stick_x)/2;
-    BackLeft.setPower(BL_power);
+    double FR_power = (gamepad1.left_stick_y + gamepad1.left_stick_x)/2;
+    double BR_power = (gamepad1.left_stick_y - gamepad1.left_stick_x)/2;
 
-    double BR_power = (gamepad1.right_stick_y - gamepad1.right_stick_x)/2;
-    BackRight.setPower(BR_power);
+    //turning motion
+    FL_power -= gamepad1.right_stick_x/2;
+    BL_power -= gamepad1.right_stick_x/2;
+    FR_power += gamepad1.right_stick_x/2;
+    BR_power += gamepad1.right_stick_x/2;
+
+    FrontRight.setPower(clamp(FR_power,-1,1));
+    FrontLeft.setPower(clamp(FL_power,-1,1));
+    BackRight.setPower(clamp(BR_power,-1,1));
+    BackLeft.setPower(clamp(BL_power,-1,1));
 
 
-    //iffy that this works idk if Im using WHILE correct and if the values for my powers are correct
-    while (gamepad1.dpad_up){
+
+
+    //iffy that this works idk if Im using valuable correct and if the values for my powers are correct
+    if (gamepad2.dpad_down){
       LiftLeft.setPower(Lift_power);
       LiftRight.setPower(Lift_power);
+
     }
-    while (gamepad1.dpad_down){
+    else if (gamepad2.dpad_up){
       LiftLeft.setPower(-Lift_power);
       LiftRight.setPower(-Lift_power);
     }
+    else {
+      LiftLeft.setPower(0);
+      LiftRight.setPower(0);
+    }
 
-    telemetry.addData("right trigger", gamepad1.right_trigger);
-    telemetry.addData("left trigger", gamepad1.left_trigger);
+    telemetry.addData("right trigger", gamepad2.right_trigger);
+    telemetry.addData("left trigger", gamepad2.left_trigger);
     telemetry.update();
 
     //full closed
-    if (gamepad1.right_bumper) {
+    if (gamepad2.right_bumper) {
       ServoLeft.setPosition(0.44);
       ServoRight.setPosition(0.56);
 
     }
 
     //full open
-    else if (gamepad1.left_bumper) {
+    else if (gamepad2.left_bumper) {
       ServoLeft.setPosition(0);
       ServoRight.setPosition(1);
 
     }
 
-    if (gamepad1.right_trigger > 0.2) {
-      ServoHingeRight.setPosition(0.7);
-      ServoHingeLeft.setPosition(0.3);
+    //hinge down
+    if (gamepad2.right_trigger > 0.2) {
+      ServoHingeRight.setPosition(0.55);
+      //ServoHingeLeft.setPosition(0.45);
 
     }
-    else if (gamepad1.left_trigger > 0.2) {
-      ServoHingeRight.setPosition(0.3);
-      ServoHingeLeft.setPosition(0.7);
+    //hinge up
+    else if (gamepad2.left_trigger > 0.2) {
+      ServoHingeRight.setPosition(0);
+      //ServoHingeLeft.setPosition(1);
     }
-    else if (gamepad1.a) {
-      ServoHingeRight.setPosition(0.6);
-      ServoHingeLeft.setPosition(0.4);
+    //hinge middle section
+    else if (gamepad2.a) {
+      ServoHingeRight.setPosition(0.4);
+      //ServoHingeLeft.setPosition(0.6);
     }
 
-    //Need to find out where the servo is at tho so figure out where 1 is and where 0 is
-    if (gamepad1.y){
+    //down
+    if (gamepad2.y){
       ServoDump.setPosition(1);
     }
-    else if (gamepad1.x){
-      ServoDump.setPosition(0);
+    //up
+    else if (gamepad2.x){
+      ServoDump.setPosition(0.15);
     }
+
+
 
 
 
@@ -170,6 +190,16 @@ public class TempestTeleop extends OpMode {
     BackLeft.setPower(0);
     BackRight.setPower(0);
 */
+  }
+
+  private double clamp (double val, double min, double max){
+    if (val < min) {
+      val = min;
+    }
+    else if (val > max){
+      val = max;
+    }
+    return val;
   }
 
 }
