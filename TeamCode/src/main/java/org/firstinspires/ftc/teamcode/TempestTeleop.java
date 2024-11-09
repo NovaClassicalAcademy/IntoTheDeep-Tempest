@@ -16,6 +16,7 @@ import java.util.List;
 @TeleOp(name = "TempestTeleop", group = "TeleOp")
 
 public class TempestTeleop extends OpMode {
+
   DcMotor FrontLeft;
   DcMotor FrontRight;
   DcMotor BackLeft;
@@ -73,12 +74,7 @@ public class TempestTeleop extends OpMode {
     for (LynxModule hub : allHubs) {
       hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
     }
-
-    // Tell the driver that initialization is complete.
     telemetry.addData("Status", "Initialized");
-
-
-
   }
 
   /*
