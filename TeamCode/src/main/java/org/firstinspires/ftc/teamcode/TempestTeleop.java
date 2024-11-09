@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -8,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import java.util.List;
 
 
 @TeleOp(name = "TempestTeleop", group = "TeleOp")
@@ -36,6 +39,14 @@ public class TempestTeleop extends OpMode {
   @Override
   public void init() {
     telemetry.addData("Status", "Initialized");
+
+
+
+    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
+    for (LynxModule hub : allHubs) {
+      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+    }
 
     ServoHingeLeft =hardwareMap.get(Servo.class,"HingeLeft");
     ServoHingeRight =hardwareMap.get(Servo.class,"HingeRight");
@@ -110,12 +121,13 @@ public class TempestTeleop extends OpMode {
 
 
 
-    //iffy that this works idk if Im using valuable correct and if the values for my powers are correct
+    //lift down
     if (gamepad2.dpad_down){
       LiftLeft.setPower(Lift_power);
       LiftRight.setPower(Lift_power);
 
     }
+    //lift up
     else if (gamepad2.dpad_up){
       LiftLeft.setPower(-Lift_power);
       LiftRight.setPower(-Lift_power);
@@ -129,14 +141,14 @@ public class TempestTeleop extends OpMode {
     telemetry.addData("left trigger", gamepad2.left_trigger);
     telemetry.update();
 
-    //full closed
+    //claw full closed
     if (gamepad2.right_bumper) {
       ServoLeft.setPosition(0.44);
       ServoRight.setPosition(0.56);
 
     }
 
-    //full open
+    // cLaw full open
     else if (gamepad2.left_bumper) {
       ServoLeft.setPosition(0);
       ServoRight.setPosition(1);
@@ -160,11 +172,11 @@ public class TempestTeleop extends OpMode {
       //ServoHingeLeft.setPosition(0.6);
     }
 
-    //down
+    //bucket down
     if (gamepad2.y){
       ServoDump.setPosition(1);
     }
-    //up
+    // bucket up
     else if (gamepad2.x){
       ServoDump.setPosition(0.15);
     }
@@ -184,12 +196,12 @@ public class TempestTeleop extends OpMode {
    */
   @Override
   public void stop() {
-    /*
+
     FrontLeft.setPower(0);
     FrontRight.setPower(0);
     BackLeft.setPower(0);
     BackRight.setPower(0);
-*/
+
   }
 
   private double clamp (double val, double min, double max){
