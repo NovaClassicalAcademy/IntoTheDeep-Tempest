@@ -68,14 +68,16 @@ public class TempestTeleop extends OpMode {
 
     ServoDump = hardwareMap.get(Servo.class, "ServoDump");
 
-    // Tell the driver that initialization is complete.
-    telemetry.addData("Status", "Initialized");
-
     List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
     for (LynxModule hub : allHubs) {
       hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
     }
+
+    // Tell the driver that initialization is complete.
+    telemetry.addData("Status", "Initialized");
+
+
 
   }
 
