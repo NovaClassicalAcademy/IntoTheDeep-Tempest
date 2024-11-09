@@ -89,6 +89,12 @@ public class TempestTeleop extends OpMode {
    */
   @Override
   public void start() {
+
+
+
+
+
+
     ;
   }
 
@@ -136,6 +142,8 @@ public class TempestTeleop extends OpMode {
 
     telemetry.addData("right trigger", gamepad2.right_trigger);
     telemetry.addData("left trigger", gamepad2.left_trigger);
+    telemetry.addData("Lift Left", LiftLeft.getCurrentPosition());
+    telemetry.addData("Lift Right", LiftRight.getCurrentPosition());
     telemetry.update();
 
     //claw full closed
@@ -152,22 +160,22 @@ public class TempestTeleop extends OpMode {
 
     }
 
-    //hinge down
-    if (gamepad2.right_trigger > 0.2) {
-      ServoHingeRight.setPosition(0.55);
-      //ServoHingeLeft.setPosition(0.45);
-
-    }
     //hinge up
-    else if (gamepad2.left_trigger > 0.2) {
-      ServoHingeRight.setPosition(0);
-      //ServoHingeLeft.setPosition(1);
+    if (gamepad2.left_trigger > 0.2) {
+      ServoHingeRight.setPosition(0.25);
+      ServoHingeLeft.setPosition(1);
+    }
+    //hinge down
+    else if (gamepad2.right_trigger > 0.2) {
+      ServoHingeRight.setPosition(0.55);
+      ServoHingeLeft.setPosition(0.7);
     }
     //hinge middle section
     else if (gamepad2.a) {
-      ServoHingeRight.setPosition(0.4);
-      //ServoHingeLeft.setPosition(0.6);
+      ServoHingeRight.setPosition(0.45);
+      ServoHingeLeft.setPosition(0.8);
     }
+
 
     //bucket down
     if (gamepad2.y){
