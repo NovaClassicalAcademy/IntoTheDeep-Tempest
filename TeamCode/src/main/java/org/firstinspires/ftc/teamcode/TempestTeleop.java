@@ -167,8 +167,8 @@ public class TempestTeleop extends OpMode {
     }
     //hinge down
     else if (gamepad2.right_trigger > 0.2) {
-      ServoHingeRight.setPosition(0.55);
-      ServoHingeLeft.setPosition(0.7);
+      ServoHingeRight.setPosition(0.575);
+      ServoHingeLeft.setPosition(0.675);
     }
     //hinge middle section
     else if (gamepad2.a) {
@@ -184,6 +184,9 @@ public class TempestTeleop extends OpMode {
     // bucket up
     else if (gamepad2.x){
       ServoDump.setPosition(0.15);
+    }
+    else if (gamepad1.a){
+      ServoDump.setPosition(0.55);
     }
 
 
