@@ -67,17 +67,34 @@ public class ParkAuto1 extends LinearOpMode {
 
         waitForStart();
         //get off wall
-        FrontLeft.setPower(-0.25);
-        FrontRight.setPower(0.25);
-        BackLeft.setPower(0.25);
-        BackRight.setPower(-0.25);
+        FrontLeft.setPower(0.6);
+        FrontRight.setPower(-0.6);
+        BackLeft.setPower(-0.6);
+        BackRight.setPower(0.6);
         sleep(500);
+
+        FrontLeft.setPower(0.2);
+        FrontRight.setPower(-0.2);
+        BackLeft.setPower(0.2);
+        BackRight.setPower(-0.2);
+        sleep(500);
+
+        FrontLeft.setPower(0.35);
+        FrontRight.setPower(-0.35);
+        BackLeft.setPower(-0.35);
+        BackRight.setPower(0.35);
+        sleep(500);
+
+
+
 
         //go forward
         FrontLeft.setPower(0.5);
         FrontRight.setPower(0.5);
         BackLeft.setPower(0.5);
         BackRight.setPower(0.5);
+
+
 
         //park
         while (opModeIsActive()) {
@@ -87,22 +104,23 @@ public class ParkAuto1 extends LinearOpMode {
             telemetry.addData("Distance: ", Distance);
             telemetry.addData("LiftRightPosition:", LiftRightPosition);
 
-            if (Distance <= -3.5) {
+            if (Distance <= -7) {
                 //stop
                 FrontLeft.setPower(0);
                 FrontRight.setPower(0);
                 BackLeft.setPower(0);
                 BackRight.setPower(0);
 
-            if (LiftRightPosition > -1250 && !BackLeft.isBusy() || !BackRight.isBusy() || !FrontLeft.isBusy() || !FrontRight.isBusy()) {
-                LiftLeft.setPower(-Lift_power);
-                LiftRight.setPower(-Lift_power);
+                if (LiftRightPosition > -1250 && !BackLeft.isBusy() || !BackRight.isBusy() || !FrontLeft.isBusy() || !FrontRight.isBusy()) {
+                    LiftLeft.setPower(-Lift_power);
+                    LiftRight.setPower(-Lift_power);
                 }
-            if (LiftRightPosition < -2940) {
-                ServoDump.setPosition(0.25);
-                sleep(1000);
+                if (LiftRightPosition < -2940) {
+                    ServoDump.setPosition(0.25);
+                    sleep(1000);
+                    
+                }
             }
-        }
 
             telemetry.update();
         }

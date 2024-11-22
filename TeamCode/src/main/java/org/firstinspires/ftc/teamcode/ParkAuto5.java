@@ -87,7 +87,7 @@ public class ParkAuto5 extends LinearOpMode {
             telemetry.addData("Distance: ", Distance);
             telemetry.addData("LiftRightPosition:", LiftRightPosition);
 
-            if (Distance <= -4) {
+            if (Distance <= -9 ) {
                 //stop
                 FrontLeft.setPower(0);
                 FrontRight.setPower(0);
@@ -98,6 +98,8 @@ public class ParkAuto5 extends LinearOpMode {
 
             telemetry.update();
         }
+
+
     }
 
     private double getDistance() {

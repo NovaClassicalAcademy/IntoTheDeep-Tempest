@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@Autonomous(name = "ParkAuto", group = "Autonomous")
+@Autonomous(name = "NOID", group = "Autonomous")
 
 public class ParkAuto extends LinearOpMode {
   DcMotor FrontLeft;
