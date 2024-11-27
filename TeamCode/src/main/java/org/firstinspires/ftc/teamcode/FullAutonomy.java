@@ -5,18 +5,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
 @Autonomous(name = "ParkAuto", group = "Autonomous")
 
 
-public class ParkAuto5 extends LinearOpMode {
+public class FullAutonomy extends LinearOpMode {
     DcMotor FrontLeft;
     DcMotor FrontRight;
     DcMotor BackLeft;
     DcMotor BackRight;
     DcMotor EncoderWheel;
+
+    //TODO: do we have a gyro sensor and how many are there. can we use it? 1
+    GyroSensor Gyro;
 
     int TicksPerRotation = 2000;
     double EncoderWheelDiameter = 1.82;
@@ -83,21 +88,21 @@ public class ParkAuto5 extends LinearOpMode {
         BackRight.setPower(-0.6);
         sleep(500);
 
-        //dump auto 1
+        //first element deposit after start
         MoveToDumpTower();
         ExtendLift();
         DumpBucket();
         RetractLift();
 
-        //pick up and dump
+        //second element pick up and dump
         MoveToElement();
         PickUpElement();
-        MoveToDumpTower();
+        MoveElementToDumpTower();
         ExtendLift();
         DumpBucket();
         RetractLift();
 
-        //park
+        //park in observation zone
         MoveToZone();
     }
 
@@ -131,7 +136,7 @@ public class ParkAuto5 extends LinearOpMode {
 
         double distance = getDistance();
 
-        while (distance >= -1.5) {
+        while (distance > -1.5) {
             ServoLeft.setPosition(0);
             ServoRight.setPosition(1);
             sleep(500);
@@ -143,36 +148,104 @@ public class ParkAuto5 extends LinearOpMode {
         ServoLeft.setPosition(0);
         ServoRight.setPosition(0);
         sleep(300);
-    }
+
 
         ServoLeft.setPosition(0);
         ServoRight.setPosition(1);
+    }
 
+    private void MoveElementToDumpTower(){
+        double distance = getDistance();
+        TurnRobot(0);
+        MoveRobot(0);
+        double rotateAmount = 0;
+        double moveDistance = 0;
+
+        while (rotateAmount - moveDistance == 0){
+            return;
+        }
+
+    }
 
     //NOTE: move to element
-    private void MoveToElement(){
+    private void TurnRobot(double rotateAmount){
+        double initialRotation = Gyro.getRotationFraction();
+        double currentRotation = initialRotation;
 
-       double distance = getDistance();
+        if (rotateAmount == 0) {
+            return;
+        }
 
-        while (distance >= -1.5){
-            telemetry.addData("Distance: ", distance);
-            telemetry.update();
-
-            sleep(500);
-            //turn
+        else if (rotateAmount < 0){
+            //TODO: determine if this is turning left or right. should be left
             FrontLeft.setPower(0.15);
             FrontRight.setPower(-0.15);
             BackLeft.setPower(0.15);
             BackRight.setPower(-0.15);
+        }
 
-            sleep(500);
+        else {
+            //TODO: determine if this is turning left or right. should be right
+            FrontLeft.setPower(-0.15);
+            FrontRight.setPower(0.15);
+            BackLeft.setPower(-0.15);
+            BackRight.setPower(0.15);
+        }
 
-            //go forward
-            FrontLeft.setPower(0.5);
-            FrontRight.setPower(0.5);
-            BackLeft.setPower(0.5);
-            BackRight.setPower(0.5);
-            sleep(500);
+        while (Math.abs(currentRotation - initialRotation) < Math.abs(rotateAmount)){
+            sleep(100);
+            currentRotation = Gyro.getRotationFraction();
+        }
+
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+    }
+
+    private void MoveRobot(double moveDistance){
+        double initialDistance = getDistance();
+        double currentDistance = initialDistance;
+
+        if (moveDistance == 0) {
+            return;
+        }
+
+        else if (moveDistance < 0){
+            FrontLeft.setPower(0.0);
+            FrontRight.setPower(0.0);
+            BackLeft.setPower(0.0);
+            BackRight.setPower(0.0);
+        }
+
+        else {
+            //TODO: is this going back or forward?
+            FrontLeft.setPower(0.15);
+            FrontRight.setPower(0.15);
+            BackLeft.setPower(0.15);
+            BackRight.setPower(0.15);
+        }
+
+        while (Math.abs(currentDistance - initialDistance) < Math.abs(moveDistance)){
+            sleep(100);
+            currentDistance = getDistance();
+        }
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+    }
+    private void MoveToElement(){
+
+       double initialDistance = getDistance();
+       double currentDistance = getDistance();
+       double distanceToElement = 1.5;
+
+       //TODO: might need to adjust distance to get to element!
+        while (currentDistance - initialDistance <= distanceToElement){
+            telemetry.addData("Distance: ", initialDistance);
+            telemetry.update();
+
         }
     }
 
