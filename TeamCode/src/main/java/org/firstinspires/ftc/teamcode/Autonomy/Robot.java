@@ -1,18 +1,16 @@
 package org.firstinspires.ftc.teamcode.Autonomy;
 
-import static android.os.SystemClock.sleep;
-
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
-    private final DcMotor frontLeft;
-    private final DcMotor frontRight;
-    private final DcMotor backLeft;
-    private final DcMotor backRight;
+    private final DcMotor FrontLeft;
+    private final DcMotor FrontRight;
+    private final DcMotor BackLeft;
+    private final DcMotor BackRight;
     private final DcMotor EncoderWheel;
     private final DcMotor LiftLeft;
     private final DcMotor LiftRight;
@@ -21,7 +19,7 @@ public class Robot {
     private final Servo ServoRight;
     private final Servo ServoHingeLeft;
     private final Servo ServoHingeRight;
-    private final ModernRoboticsI2cGyro Gyro;
+//    private final GyroSensor Gyro;
 
     private final double LiftPower = 0.5;
     private final int StartingPosition;
@@ -30,22 +28,22 @@ public class Robot {
     public Robot(HardwareMap hardwareMap) {
         EncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
 
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
+        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
 
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
+        BackRight = hardwareMap.get(DcMotor.class, "BackRight");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
@@ -60,7 +58,7 @@ public class Robot {
         ServoHingeRight = hardwareMap.get(Servo.class, "HingeRight");
 
         // TODO: get the gyro sensor's name and update mapping
-        Gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "GyroSensor");
+//        Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
 
         StartingPosition = EncoderWheel.getCurrentPosition();
     }
@@ -76,35 +74,35 @@ public class Robot {
         return LiftRight.getCurrentPosition();
     }
 
-    public void Turn(double degreeChange) {
-        //TODO: is our gyro a part of ModernRoboticsI2cGyro?
-        double currentAngle = Gyro.getIntegratedZValue();
-        double targetAngle = currentAngle + degreeChange;
-        //TODO: is this number accurate? Do we need to decrease?
-        double angleRange = 2;
-
-        while (Math.abs(targetAngle - currentAngle) > angleRange) {
-
-            if (targetAngle > currentAngle) {
-                //TODO: figure out if this is turning left or right---should be left
-                frontLeft.setPower(-0.15);
-                frontRight.setPower(0.15);
-                backLeft.setPower(-0.15);
-                backRight.setPower(0.15);
-            } else {
-                //TODO: do the opposite of above once direction is figured out----should be right
-                frontLeft.setPower(0.15);
-                frontRight.setPower(-0.15);
-                backLeft.setPower(0.15);
-                backRight.setPower(-0.15);
-            }
-
-            frontLeft.setPower(0.0);
-            frontRight.setPower(0.0);
-            backLeft.setPower(0.0);
-            backRight.setPower(0.0);
-        }
-    }
+//    public void Turn(double degreeChange) {
+//        //TODO: is our gyro a part of ModernRoboticsI2cGyro?
+//        double currentAngle = Gyro.getHeading();
+//        double targetAngle = currentAngle + degreeChange;
+//        //TODO: is this number accurate? Do we need to decrease?
+//        double angleRange = 2;
+//
+//        while (Math.abs(targetAngle - currentAngle) > angleRange) {
+//
+//            if (targetAngle > currentAngle) {
+//                //TODO: figure out if this is turning left or right---should be left
+//                FrontLeft.setPower(-0.15);
+//                FrontRight.setPower(0.15);
+//                BackLeft.setPower(-0.15);
+//                BackRight.setPower(0.15);
+//            } else {
+//                //TODO: do the opposite of above once direction is figured out----should be right
+//                FrontLeft.setPower(0.15);
+//                FrontRight.setPower(-0.15);
+//                BackLeft.setPower(0.15);
+//                BackRight.setPower(-0.15);
+//            }
+//
+//            FrontLeft.setPower(0.0);
+//            FrontRight.setPower(0.0);
+//            BackLeft.setPower(0.0);
+//            BackRight.setPower(0.0);
+//        }
+//    }
 
     public void Move(double moveDistance) {
         double currentDistance = getDistance();
@@ -113,26 +111,26 @@ public class Robot {
 
         while (Math.abs(targetDistance - currentDistance) > rangeDistance) {
 
-            //TODO: is this going backwards or forwards--should be forwards
+            //TODO: is this going backwards or forwards-- forwards
             if (targetDistance > currentDistance) {
-                frontLeft.setPower(-0.15);
-                frontRight.setPower(-0.15);
-                backLeft.setPower(-0.15);
-                backRight.setPower(-0.15);
-            } else { //TODO: is this going backwards or forwards--should be backwards
-                frontLeft.setPower(0.15);
-                frontRight.setPower(0.15);
-                backLeft.setPower(0.15);
-                backRight.setPower(0.15);
+                FrontLeft.setPower(-0.5);
+                FrontRight.setPower(-0.5);
+                BackLeft.setPower(-0.5);
+                BackRight.setPower(-0.5);
+            } else { //TODO: is this going backwards or forwards-- backwards might need to change value
+                FrontLeft.setPower(0.5);
+                FrontRight.setPower(0.5);
+                BackLeft.setPower(0.5);
+                BackRight.setPower(0.5);
             }
 
             currentDistance = getDistance();
         }
 
-        frontLeft.setPower(0.0);
-        frontRight.setPower(0.0);
-        backLeft.setPower(0.0);
-        backRight.setPower(0.0);
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
     }
 
 //        //NOTE: this if else determines the backward or forward movement
@@ -165,23 +163,23 @@ public class Robot {
         while (Math.abs(targetStrafeDistance - currentStrafePosition) > distanceRange) {
             //TODO: is this left or right--should be right
             if (targetStrafeDistance > currentStrafePosition){
-            frontLeft.setPower(5);
-            frontRight.setPower(-5);
-            backLeft.setPower(5);
-            backRight.setPower(-5);
+            FrontLeft.setPower(-0.5);
+            FrontRight.setPower(0.5);
+            BackLeft.setPower(0.5);
+            BackRight.setPower(-0.5);
             } else { //TODO: should be left
-                frontLeft.setPower(-5);
-                frontRight.setPower(5);
-                backLeft.setPower(-5);
-                backRight.setPower(5);
+                FrontLeft.setPower(0.5);
+                FrontRight.setPower(-0.5);
+                BackLeft.setPower(-0.5);
+                BackRight.setPower(0.5);
             }
 
             currentStrafePosition = getDistance();
         }
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+        FrontLeft.setPower(0);
+        FrontRight.setPower(0);
+        BackLeft.setPower(0);
+        BackRight.setPower(0);
     }
 
     public void LowerHinge(){
