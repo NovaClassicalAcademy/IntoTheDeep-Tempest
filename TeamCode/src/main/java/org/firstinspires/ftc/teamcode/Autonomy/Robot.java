@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Autonomy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -11,7 +10,7 @@ public class Robot {
     private final DcMotor FrontRight;
     private final DcMotor BackLeft;
     private final DcMotor BackRight;
-    private final DcMotor EncoderWheel;
+    private final DcMotor YEncoderWheel;
     private final DcMotor LiftLeft;
     private final DcMotor LiftRight;
     private final Servo ServoDump;
@@ -20,13 +19,16 @@ public class Robot {
     private final Servo ServoHingeLeft;
     private final Servo ServoHingeRight;
 //    private final GyroSensor Gyro;
+    private final DcMotor XEncoderWheel;
 
     private final double LiftPower = 0.5;
-    private final int StartingPosition;
+    private final int StartingYPosition;
+    private final int StartingXPosition;
 
 
     public Robot(HardwareMap hardwareMap) {
-        EncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
+        YEncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
+        XEncoderWheel = hardwareMap.get(DcMotor.class, "StrafeWheel");
 
         FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
         FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
@@ -60,18 +62,25 @@ public class Robot {
         // TODO: get the gyro sensor's name and update mapping
 //        Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
 
-        StartingPosition = EncoderWheel.getCurrentPosition();
+        StartingYPosition = YEncoderWheel.getCurrentPosition();
+        StartingXPosition = XEncoderWheel.getCurrentPosition();
     }
 
-    private double getDistance() {
+    /// returns forward and backward distance
+    private double getYDistance() {
         int ticksPerRotation = 2000;
-        double Rotations = (double) (EncoderWheel.getCurrentPosition() - StartingPosition) / ticksPerRotation;
+        double Rotations = (double) (YEncoderWheel.getCurrentPosition() - StartingYPosition) / ticksPerRotation;
         double encoderWheelDiameter = 1.82;
         return Rotations * encoderWheelDiameter * Math.PI;
     }
 
-    private double getLiftPosition() {
-        return LiftRight.getCurrentPosition();
+   /// returns left and right distance
+   // not installed yet either
+    private double getXDistance() {
+        int ticksPerRotation = 2000;
+        double Rotations = (double) (XEncoderWheel.getCurrentPosition() - StartingXPosition)/ ticksPerRotation;
+        double strafeWheelDiameter = 1.82;
+        return Rotations * strafeWheelDiameter * Math.PI;
     }
 
 //    public void Turn(double degreeChange) {
@@ -105,7 +114,7 @@ public class Robot {
 //    }
 
     public void Move(double moveDistance) {
-        double currentDistance = getDistance();
+        double currentDistance = getYDistance();
         double targetDistance = currentDistance + moveDistance;
         double rangeDistance = 1.5;
 
@@ -124,7 +133,7 @@ public class Robot {
                 BackRight.setPower(0.5);
             }
 
-            currentDistance = getDistance();
+            currentDistance = getYDistance();
         }
 
         FrontLeft.setPower(0.0);
@@ -156,7 +165,7 @@ public class Robot {
 //            currentDistance = GetDistance();
 //        }
     public void Strafe(double strafeDistance) {
-        double currentStrafePosition = getDistance();
+        double currentStrafePosition = getXDistance();
         double targetStrafeDistance = currentStrafePosition + strafeDistance;
         double distanceRange = 5; //TODO: does this need to be adjusted?
 
@@ -168,13 +177,13 @@ public class Robot {
             BackLeft.setPower(0.5);
             BackRight.setPower(-0.5);
             } else { //TODO: should be left
-                FrontLeft.setPower(0.5);
-                FrontRight.setPower(-0.5);
-                BackLeft.setPower(-0.5);
-                BackRight.setPower(0.5);
+            FrontLeft.setPower(0.5);
+            FrontRight.setPower(-0.5);
+            BackLeft.setPower(-0.5);
+            BackRight.setPower(0.5);
             }
 
-            currentStrafePosition = getDistance();
+            currentStrafePosition = getXDistance();
         }
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
@@ -183,7 +192,8 @@ public class Robot {
     }
 
     public void LowerHinge(){
-        //TODO: which is the lowest position? LOOK IN TELEOP
+        ServoHingeLeft.setPosition(0.575);
+        ServoHingeRight.setPosition(0.675);
         }
 
     public void Claw() {
@@ -195,11 +205,13 @@ public class Robot {
                 ServoRight.setPosition(0.56);
     }
 
-    public void LiftHinge(){
-        //TODO: which is the highest position? LOOK IN TELEOP
+    public void LiftHinge() {
+        ServoHingeLeft.setPosition(1.0);
+        ServoHingeRight.setPosition(0.25);
     }
+
     public void LowerLift(double lowerHeight) {
-        double currentLiftPosition = getLiftPosition();
+        double currentLiftPosition = LiftRight.getCurrentPosition();
         double targetPosition = currentLiftPosition + lowerHeight;
         double heightRange = 3;
 
@@ -207,14 +219,14 @@ public class Robot {
                 LiftLeft.setPower(-LiftPower);
                 LiftRight.setPower(-LiftPower);
 
-                currentLiftPosition = getLiftPosition();
+                currentLiftPosition = LiftRight.getCurrentPosition();
             }
 
         LiftLeft.setPower(0.0);
         LiftRight.setPower(0.0);
     }
 
-    public void Dump () {
+    public void Dump() {
         double currentDumpPosition = ServoDump.getPosition();
         double endPosition = 1;
 
@@ -240,7 +252,7 @@ public class Robot {
             }
 
     public void LiftLift (double highHeight){
-        double currentLiftPosition = getLiftPosition();
+        double currentLiftPosition = LiftRight.getCurrentPosition();
         double targetPosition = currentLiftPosition + highHeight;
         double heightRange = 6;
 
@@ -248,7 +260,7 @@ public class Robot {
             LiftLeft.setPower(LiftPower);
             LiftRight.setPower(LiftPower);
 
-            currentLiftPosition = getLiftPosition();
+            currentLiftPosition = LiftRight.getCurrentPosition();
         }
     }
 

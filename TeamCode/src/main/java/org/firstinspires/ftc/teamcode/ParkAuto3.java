@@ -11,8 +11,8 @@
 //@Autonomous(name = "ParkAuto", group = "Autonomous")
 //
 //public class ParkAuto3 extends LinearOpMode {
-//    DcMotor FrontLeft;
-//    DcMotor FrontRight;
+//    DcMotor frontLeft;
+//    DcMotor frontRight;
 //    DcMotor BackLeft;
 //    DcMotor BackRight;
 //    DcMotor EncoderWheel;
@@ -34,20 +34,20 @@
 //
 //        EncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
 //
-//        FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-//        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+//        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+//        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
 //
 //        BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
 //        BackRight = hardwareMap.get(DcMotor.class, "BackRight");
 //
-//        FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-//        FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 //
 //        BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 //        BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 //
-//        FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //
@@ -91,8 +91,8 @@
 //
 ////
 ////        //go forward
-////        FrontLeft.setPower(0.5);
-////        FrontRight.setPower(0.5);
+////        frontLeft.setPower(0.5);
+////        frontRight.setPower(0.5);
 ////        BackLeft.setPower(0.5);
 ////        BackRight.setPower(0.5);
 ////
@@ -106,12 +106,12 @@
 ////
 ////            if (Distance <= -3.5) {
 ////                //stop
-////                FrontLeft.setPower(0);
-////                FrontRight.setPower(0);
+////                frontLeft.setPower(0);
+////                frontRight.setPower(0);
 ////                BackLeft.setPower(0);
 ////                BackRight.setPower(0);
 ////
-////            if (LiftRightPosition > -1250 && !BackLeft.isBusy() || !BackRight.isBusy() || !FrontLeft.isBusy() || !FrontRight.isBusy()) {
+////            if (LiftRightPosition > -1250 && !BackLeft.isBusy() || !BackRight.isBusy() || !frontLeft.isBusy() || !frontRight.isBusy()) {
 ////                LiftLeft.setPower(-Lift_power);
 ////                LiftRight.setPower(-Lift_power);
 ////                }
@@ -166,8 +166,8 @@
 //        boolean taskCompleted = false;
 //
 //        //go forward
-//        FrontLeft.setPower(0.5);
-//        FrontRight.setPower(0.5);
+//        frontLeft.setPower(0.5);
+//        frontRight.setPower(0.5);
 //        BackLeft.setPower(0.5);
 //        BackRight.setPower(0.5);
 //
@@ -183,8 +183,8 @@
 //        }
 //
 //        //stop
-//        FrontLeft.setPower(0);
-//        FrontRight.setPower(0);
+//        frontLeft.setPower(0);
+//        frontRight.setPower(0);
 //        BackLeft.setPower(0);
 //        BackRight.setPower(0);
 //

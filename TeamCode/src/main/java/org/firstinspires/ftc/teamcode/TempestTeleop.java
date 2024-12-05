@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "TempestTeleop", group = "TeleOp")
 
 public class TempestTeleop extends OpMode {
-  DcMotor FrontLeft;
-  DcMotor FrontRight;
+  DcMotor frontLeft;
+  DcMotor frontRight;
   DcMotor BackLeft;
   DcMotor BackRight;
 
@@ -40,14 +40,14 @@ public class TempestTeleop extends OpMode {
     ServoHingeLeft =hardwareMap.get(Servo.class,"HingeLeft");
     ServoHingeRight =hardwareMap.get(Servo.class,"HingeRight");
 
-    FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-    FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+    frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+    frontRight = hardwareMap.get(DcMotor.class, "frontRight");
 
     BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
     BackRight = hardwareMap.get(DcMotor.class, "BackRight");
 
-    FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-    FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+    frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
     BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -89,10 +89,10 @@ public class TempestTeleop extends OpMode {
   @Override
   public void loop() {
     double FL_power = (gamepad1.left_stick_y - gamepad1.left_stick_x)/2;
-    FrontLeft.setPower(FL_power);
+    frontLeft.setPower(FL_power);
 
     double FR_power = (gamepad1.left_stick_y + gamepad1.left_stick_x)/2;
-    FrontRight.setPower(FR_power);
+    frontRight.setPower(FR_power);
 
     double BL_power = (gamepad1.left_stick_y + gamepad1.left_stick_x)/2;
     BackLeft.setPower(BL_power);
@@ -166,8 +166,8 @@ public class TempestTeleop extends OpMode {
   @Override
   public void stop() {
     /*
-    FrontLeft.setPower(0);
-    FrontRight.setPower(0);
+    frontLeft.setPower(0);
+    frontRight.setPower(0);
     BackLeft.setPower(0);
     BackRight.setPower(0);
 */

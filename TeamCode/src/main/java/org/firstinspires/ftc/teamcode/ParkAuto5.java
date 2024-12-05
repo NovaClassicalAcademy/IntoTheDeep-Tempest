@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class ParkAuto5 extends LinearOpMode {
-    DcMotor FrontLeft;
-    DcMotor FrontRight;
+    DcMotor frontLeft;
+    DcMotor frontRight;
     DcMotor BackLeft;
     DcMotor BackRight;
     DcMotor EncoderWheel;
@@ -40,20 +40,20 @@ public class ParkAuto5 extends LinearOpMode {
 
         EncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
 
-        FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
 
         BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
 
-        FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -77,8 +77,8 @@ public class ParkAuto5 extends LinearOpMode {
 
         waitForStart();
         //get off wall
-        FrontLeft.setPower(0.6);
-        FrontRight.setPower(-0.6);
+        frontLeft.setPower(0.6);
+        frontRight.setPower(-0.6);
         BackLeft.setPower(0.6);
         BackRight.setPower(-0.6);
         sleep(500);
@@ -104,16 +104,16 @@ public class ParkAuto5 extends LinearOpMode {
     //NOTE: park
     private void MoveToZone() {
         //turn
-        FrontLeft.setPower(-0.2);
-        FrontRight.setPower(0.2);
+        frontLeft.setPower(-0.2);
+        frontRight.setPower(0.2);
         BackLeft.setPower(-0.2);
         BackRight.setPower(0.2);
 
         sleep(500);
 
         //go forward
-        FrontLeft.setPower(0.5);
-        FrontRight.setPower(0.5);
+        frontLeft.setPower(0.5);
+        frontRight.setPower(0.5);
         BackLeft.setPower(0.5);
         BackRight.setPower(0.5);
 
@@ -145,8 +145,8 @@ public class ParkAuto5 extends LinearOpMode {
         sleep(300);
     }
 
-        ServoLeft.setPosition(0);
-        ServoRight.setPosition(1);
+//        ServoLeft.setPosition(0);
+//        ServoRight.setPosition(1);
 
 
     //NOTE: move to element
@@ -160,16 +160,16 @@ public class ParkAuto5 extends LinearOpMode {
 
             sleep(500);
             //turn
-            FrontLeft.setPower(0.15);
-            FrontRight.setPower(-0.15);
+            frontLeft.setPower(0.15);
+            frontRight.setPower(-0.15);
             BackLeft.setPower(0.15);
             BackRight.setPower(-0.15);
 
             sleep(500);
 
             //go forward
-            FrontLeft.setPower(0.5);
-            FrontRight.setPower(0.5);
+            frontLeft.setPower(0.5);
+            frontRight.setPower(0.5);
             BackLeft.setPower(0.5);
             BackRight.setPower(0.5);
             sleep(500);
@@ -248,8 +248,8 @@ public class ParkAuto5 extends LinearOpMode {
         double distance = getDistance();
 
         //go forward
-        FrontLeft.setPower(0.5);
-        FrontRight.setPower(0.5);
+        frontLeft.setPower(0.5);
+        frontRight.setPower(0.5);
         BackLeft.setPower(0.5);
         BackRight.setPower(0.5);
 
@@ -262,8 +262,8 @@ public class ParkAuto5 extends LinearOpMode {
         }
         
         //stop
-        FrontLeft.setPower(0);
-        FrontRight.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
     }

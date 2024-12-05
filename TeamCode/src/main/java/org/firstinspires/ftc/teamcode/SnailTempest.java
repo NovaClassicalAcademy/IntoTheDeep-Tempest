@@ -11,8 +11,8 @@ import java.util.List;
 
 public class SnailTempest  extends OpMode {
     
-    DcMotor FrontLeft;
-    DcMotor FrontRight;
+    DcMotor frontLeft;
+    DcMotor frontRight;
     DcMotor BackLeft;
     DcMotor BackRight;
 
@@ -34,13 +34,13 @@ public class SnailTempest  extends OpMode {
         ServoHingeLeft = hardwareMap.get(Servo.class, "HingeLeft");
         ServoHingeRight = hardwareMap.get(Servo.class, "HingeRight");
 
-        FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
 
-        FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         BackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         BackRight.setDirection(DcMotorSimple.Direction.REVERSE);
