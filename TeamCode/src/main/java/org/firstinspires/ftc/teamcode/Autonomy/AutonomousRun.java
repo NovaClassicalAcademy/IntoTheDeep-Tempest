@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class AutonomousRun extends LinearOpMode {
-    private Robot myRobot;
 
     /* Code to run ONCE when the driver hits INIT */
     @Override
@@ -21,7 +20,7 @@ public class AutonomousRun extends LinearOpMode {
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initializing robot");
-        myRobot = new Robot(hardwareMap);
+        Robot myRobot = new Robot(this);
         telemetry.addData("Status", "Robot initialized");
 
         waitForStart();
@@ -33,6 +32,9 @@ public class AutonomousRun extends LinearOpMode {
         myRobot.LiftLift(1250);
 //        myRobot.LowerLift(-1250);
 //        myRobot.Turn(5);
+//        myRobot.Claw();
+//        myRobot.Gripper();
+//        myRobot.Dump();
 
 
 //

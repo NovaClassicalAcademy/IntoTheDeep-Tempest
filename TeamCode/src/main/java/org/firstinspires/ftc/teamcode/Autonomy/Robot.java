@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.Autonomy;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 public class Robot {
@@ -21,9 +21,8 @@ public class Robot {
     private final Servo ServoLeft;
     private final Servo ServoRight;
     private final Servo ServoGrip;
-    private final Servo ServoHingeLeft;
-    private final Servo ServoHingeRight;
-
+//    private final Servo ServoHingeLeft;
+//    private final Servo ServoHingeRight;
     private final GyroSensor Gyro;
 
 
@@ -32,16 +31,16 @@ public class Robot {
     private final int StartingXPosition;
 
 
-    public Robot(HardwareMap hardwareMap) {
-        telemetry.addData("Status", "Initialized");
-        YEncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
-        XEncoderWheel = hardwareMap.get(DcMotor.class, "StrafeWheel");
+    public Robot(OpMode Opmode) {
+        Opmode.telemetry.addData("Status", "Initialized");
+        YEncoderWheel = Opmode.hardwareMap.get(DcMotor.class, "EncoderWheel");
+        XEncoderWheel = Opmode.hardwareMap.get(DcMotor.class, "StrafeWheel");
 
-        FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+        FrontLeft = Opmode.hardwareMap.get(DcMotor.class, "FrontLeft");
+        FrontRight = Opmode.hardwareMap.get(DcMotor.class, "FrontRight");
 
-        BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
-        BackRight = hardwareMap.get(DcMotor.class, "BackRight");
+        BackLeft = Opmode.hardwareMap.get(DcMotor.class, "BackLeft");
+        BackRight = Opmode.hardwareMap.get(DcMotor.class, "BackRight");
 
         FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -54,25 +53,22 @@ public class Robot {
         BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
-        LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
+        LiftLeft = Opmode.hardwareMap.get(DcMotor.class, "LiftLeft");
+        LiftRight = Opmode.hardwareMap.get(DcMotor.class, "LiftRight");
 
         LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         LiftRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        ServoDump = hardwareMap.get(Servo.class, "ServoDump");
-        ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
-        ServoRight = hardwareMap.get(Servo.class, "ServoClawRight");
-        ServoGrip = hardwareMap.get(Servo.class, "Gripper");
-        ServoHingeLeft = hardwareMap.get(Servo.class, "HingeLeft");
-        ServoHingeRight = hardwareMap.get(Servo.class, "HingeRight");
-
-        Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
+        ServoDump = Opmode.hardwareMap.get(Servo.class, "ServoDump");
+        ServoLeft = Opmode.hardwareMap.get(Servo.class, "ServoClawLeft");
+        ServoRight = Opmode.hardwareMap.get(Servo.class, "ServoClawRight");
+        ServoGrip = Opmode.hardwareMap.get(Servo.class, "Gripper");
+//        ServoHingeLeft = Opmode.hardwareMap.get(Servo.class, "HingeLeft");
+//        ServoHingeRight = Opmode.hardwareMap.get(Servo.class, "HingeRight");
+        Gyro = Opmode.hardwareMap.get(GyroSensor.class, "GyroSensor");
 
         StartingYPosition = YEncoderWheel.getCurrentPosition();
         StartingXPosition = XEncoderWheel.getCurrentPosition();
-
-
     }
 
     /// returns forward and backward distance
@@ -120,6 +116,8 @@ public class Robot {
             BackLeft.setPower(0.0);
             BackRight.setPower(0.0);
         }
+
+        telemetry.addData("Angle", Gyro.getHeading());
     }
 
     public void Move(double moveDistance) {
@@ -149,6 +147,8 @@ public class Robot {
         FrontRight.setPower(0.0);
         BackLeft.setPower(0.0);
         BackRight.setPower(0.0);
+
+        telemetry.addData("Distance", getYDistance());
     }
 
 //        //NOTE: this if else determines the backward or forward movement
@@ -198,6 +198,8 @@ public class Robot {
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
+
+        telemetry.addData("Distance", getXDistance());
     }
 
 //    public void LowerHinge(){
@@ -219,16 +221,16 @@ public class Robot {
     }
 
     public void Gripper() {
-        double Open = ServoGrip.getPosition();
-        double Close = ServoGrip.getPosition();
+        double OpenClaw = ServoGrip.getPosition();
+        double CloseClaw = ServoGrip.getPosition();
 
         //open
         ServoGrip.setPosition(1);
         //close
         ServoGrip.setPosition(0);
 
-        telemetry.addData("Open", Open);
-        telemetry.addData("Close", Close);
+        telemetry.addData("OpenClaw", OpenClaw);
+        telemetry.addData("CloseClose", CloseClaw);
     }
 
     public void LowerLift(double lowerHeight) {
@@ -246,6 +248,7 @@ public class Robot {
 
         LiftLeft.setPower(0.0);
         LiftRight.setPower(0.0);
+        telemetry.addData("Low", LiftRight.getCurrentPosition());
     }
 
     public void Dump() {
@@ -285,6 +288,7 @@ public class Robot {
 
             currentLiftPosition = LiftRight.getCurrentPosition();
         }
+        telemetry.addData("High", LiftRight.getCurrentPosition());
     }
 
 //
