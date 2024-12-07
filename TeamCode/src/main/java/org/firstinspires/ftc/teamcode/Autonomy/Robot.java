@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Autonomy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -10,6 +12,7 @@ public class Robot {
     private final DcMotor FrontRight;
     private final DcMotor BackLeft;
     private final DcMotor BackRight;
+    private final DcMotor XEncoderWheel;
     private final DcMotor YEncoderWheel;
     private final DcMotor LiftLeft;
     private final DcMotor LiftRight;
@@ -18,8 +21,9 @@ public class Robot {
     private final Servo ServoRight;
     private final Servo ServoHingeLeft;
     private final Servo ServoHingeRight;
-//    private final GyroSensor Gyro;
-    private final DcMotor XEncoderWheel;
+
+    private final GyroSensor Gyro;
+
 
     private final double LiftPower = 0.5;
     private final int StartingYPosition;
@@ -59,6 +63,8 @@ public class Robot {
         ServoHingeLeft = hardwareMap.get(Servo.class, "HingeLeft");
         ServoHingeRight = hardwareMap.get(Servo.class, "HingeRight");
 
+        Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
+
         // TODO: get the gyro sensor's name and update mapping
 //        Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
 
@@ -83,35 +89,35 @@ public class Robot {
         return Rotations * strafeWheelDiameter * Math.PI;
     }
 
-//    public void Turn(double degreeChange) {
-//        //TODO: is our gyro a part of ModernRoboticsI2cGyro?
-//        double currentAngle = Gyro.getHeading();
-//        double targetAngle = currentAngle + degreeChange;
-//        //TODO: is this number accurate? Do we need to decrease?
-//        double angleRange = 2;
-//
-//        while (Math.abs(targetAngle - currentAngle) > angleRange) {
-//
-//            if (targetAngle > currentAngle) {
-//                //TODO: figure out if this is turning left or right---should be left
-//                FrontLeft.setPower(-0.15);
-//                FrontRight.setPower(0.15);
-//                BackLeft.setPower(-0.15);
-//                BackRight.setPower(0.15);
-//            } else {
-//                //TODO: do the opposite of above once direction is figured out----should be right
-//                FrontLeft.setPower(0.15);
-//                FrontRight.setPower(-0.15);
-//                BackLeft.setPower(0.15);
-//                BackRight.setPower(-0.15);
-//            }
-//
-//            FrontLeft.setPower(0.0);
-//            FrontRight.setPower(0.0);
-//            BackLeft.setPower(0.0);
-//            BackRight.setPower(0.0);
-//        }
-//    }
+    public void Turn(double degreeChange) {
+        //TODO: is our gyro a part of ModernRoboticsI2cGyro?
+        double currentAngle = Gyro.getHeading();
+        double targetAngle = currentAngle + degreeChange;
+        //TODO: is this number accurate? Do we need to decrease?
+        double angleRange = 2;
+
+        while (Math.abs(targetAngle - currentAngle) > angleRange) {
+
+            if (targetAngle > currentAngle) {
+                //TODO: figure out if this is turning left or right---should be left
+                FrontLeft.setPower(-0.15);
+                FrontRight.setPower(0.15);
+                BackLeft.setPower(-0.15);
+                BackRight.setPower(0.15);
+            } else {
+                //TODO: do the opposite of above once direction is figured out----should be right
+                FrontLeft.setPower(0.15);
+                FrontRight.setPower(-0.15);
+                BackLeft.setPower(0.15);
+                BackRight.setPower(-0.15);
+            }
+
+            FrontLeft.setPower(0.0);
+            FrontRight.setPower(0.0);
+            BackLeft.setPower(0.0);
+            BackRight.setPower(0.0);
+        }
+    }
 
     public void Move(double moveDistance) {
         double currentDistance = getYDistance();
@@ -191,26 +197,27 @@ public class Robot {
         BackRight.setPower(0);
     }
 
-    public void LowerHinge(){
-        ServoHingeLeft.setPosition(0.575);
-        ServoHingeRight.setPosition(0.675);
-        }
+//    public void LowerHinge(){
+//        ServoHingeLeft.setPosition(0.575);
+//        ServoHingeRight.setPosition(0.675);
+//        }
 
-    public void Claw() {
-                //opened
-                ServoLeft.setPosition(0);
-                ServoRight.setPosition(1);
-                //closed
-                ServoLeft.setPosition(0.44);
-                ServoRight.setPosition(0.56);
-    }
-
-    public void LiftHinge() {
-        ServoHingeLeft.setPosition(1.0);
-        ServoHingeRight.setPosition(0.25);
-    }
+//    public void SpecimenClaw() { make new adjustments.
+//                //opened
+//                ServoLeft.setPosition();
+//                ServoRight.setPosition();
+//                //closed
+//                ServoLeft.setPosition();
+//                ServoRight.setPosition();
+//    }
+//
+//    public void LiftHinge() {
+//        ServoHingeLeft.setPosition(1.0);
+//        ServoHingeRight.setPosition(0.25);
+//    }
 
     public void LowerLift(double lowerHeight) {
+        lowerHeight = lowerHeight * -1;
         double currentLiftPosition = LiftRight.getCurrentPosition();
         double targetPosition = currentLiftPosition + lowerHeight;
         double heightRange = 3;
@@ -226,32 +233,33 @@ public class Robot {
         LiftRight.setPower(0.0);
     }
 
-    public void Dump() {
-        double currentDumpPosition = ServoDump.getPosition();
-        double endPosition = 1;
-
-        if (currentDumpPosition < endPosition){
-            ServoDump.setPosition(1);
-        }
-//            double startPosition = ServoDump.getPosition();
-//            double currentPosition = startPosition;
+//    public void Dump() {
+//        double currentDumpPosition = ServoDump.getPosition();
+//        double endPosition = 1;
 //
-//            ServoDump.setPosition(0.25);
-//
-//            while (currentPosition < 0.24 || currentPosition > 0.26) {
-//                sleep(100);
-//                currentPosition = ServoDump.getPosition();
+//        if (currentDumpPosition < endPosition){
+//            ServoDump.setPosition(1);
+//        }
+////            double startPosition = ServoDump.getPosition();
+////            double currentPosition = startPosition;
+////
+////            ServoDump.setPosition(0.25);
+////
+////            while (currentPosition < 0.24 || currentPosition > 0.26) {
+////                sleep(100);
+////                currentPosition = ServoDump.getPosition();
+////            }
+////
+////            sleep(3000);
+////            ServoDump.setPosition(startPosition);
+////
+////            while (currentPosition < startPosition - 0.01 || currentPosition > startPosition + 0.01) {
+////                sleep(100);
+////                currentPosition = ServoDump.getPosition();
 //            }
-//
-//            sleep(3000);
-//            ServoDump.setPosition(startPosition);
-//
-//            while (currentPosition < startPosition - 0.01 || currentPosition > startPosition + 0.01) {
-//                sleep(100);
-//                currentPosition = ServoDump.getPosition();
-            }
 
     public void LiftLift (double highHeight){
+        highHeight = highHeight * -1;
         double currentLiftPosition = LiftRight.getCurrentPosition();
         double targetPosition = currentLiftPosition + highHeight;
         double heightRange = 6;

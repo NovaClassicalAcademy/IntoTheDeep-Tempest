@@ -30,62 +30,22 @@ public class AutonomousRun extends LinearOpMode {
 //        myRobot.Strafe(15);
 //        sleep(1000);
 //        myRobot.Strafe(-15);
+        myRobot.LiftLift(1250);
+//        myRobot.LowerLift(-1250);
+//        myRobot.Turn(5);
 
 
 //
-//        //positive is going forward, negative is going back but this works. might need to change powers. right is lighter than left side.
+//        //positive is going forward, negative is going back. might need to change powers. right is lighter than left side.
 //        myRobot.Move(-20);
 
 //        //first element deposit after start
-//        MoveToDumpTower();
-//        ExtendLift();
-//        DumpBucket();
-//        RetractLift();
+//
 //
 //        //second element pick up and dump
-//        MoveToElement();
-//        PickUpElement();
-//        MoveElementToDumpTower();
-//        ExtendLift();
-//        DumpBucket();
-//        RetractLift();
+//
 //
 //        //park in observation zone
-//        MoveToZone();
-    }
 
-//    private void MoveToDumpTower(){
-//        myRobot.Move(3.5);
-//        myRobot.Strafe(2);
-//        myRobot.Turn(5);
-//    }
-//
-//    private void ExtendLift(){
-//        myRobot.LiftLift();
-//    }
-//
-//    private void DumpBucket(){
-//        myRobot.Dump();
-//    }
-//    private void RetractLift(){
-//        myRobot.LowerLift();
-//    }
-//    private void MoveToElement(){
-//        myRobot.Move();
-//        myRobot.Strafe();
-//        myRobot.Turn();
-//    }
-//    private void PickUpElement(){
-//        myRobot.LowerHinge();
-//        myRobot.Claw();
-//        myRobot.LiftHinge();
-//    }
-//    private void MoveElementToDumpTower(){
-//
-//    }
-//    private void MoveToZone(){
-//
-//    }
-//
-//
+    }
 }
