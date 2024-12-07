@@ -32,7 +32,11 @@ public class TempestTeleop extends OpMode {
   Servo ServoHingeLeft;
   Servo ServoHingeRight;
 
+  Servo ServoGrip;
+
   Servo ServoDump;
+
+  boolean Hang = false;
 
   /*
    * Code to run ONCE when the driver hits INIT
@@ -66,7 +70,7 @@ public class TempestTeleop extends OpMode {
 
     ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
     ServoRight = hardwareMap.get(Servo.class, "ServoClawRight");
-
+    ServoGrip = hardwareMap.get(Servo.class, "ServoGrip");
     ServoDump = hardwareMap.get(Servo.class, "ServoDump");
 
     List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -124,6 +128,13 @@ public class TempestTeleop extends OpMode {
 
 
 
+    if(gamepad2.dpad_left){
+      Hang = true;
+    }
+    else if(gamepad2.dpad_right){
+      Hang = false;
+    }
+
     //lift down
     if (gamepad2.dpad_down){
       LiftLeft.setPower(Lift_power);
@@ -135,10 +146,22 @@ public class TempestTeleop extends OpMode {
       LiftLeft.setPower(-Lift_power);
       LiftRight.setPower(-Lift_power);
     }
+    else if(Hang){
+      LiftLeft.setPower(Lift_power);
+      LiftRight.setPower(Lift_power);
+    }
     else {
       LiftLeft.setPower(0);
       LiftRight.setPower(0);
     }
+
+
+
+
+
+
+
+
 
     telemetry.addData("right trigger", gamepad2.right_trigger);
     telemetry.addData("left trigger", gamepad2.left_trigger);
@@ -189,6 +212,13 @@ public class TempestTeleop extends OpMode {
       ServoDump.setPosition(0.55);
     }
 
+    if(gamepad1.right_bumper){
+      ServoGrip.setPosition(0.7);
+    }
+
+    else if(gamepad1.left_bumper){
+      ServoGrip.setPosition(0.15);
+    }
 
 
 

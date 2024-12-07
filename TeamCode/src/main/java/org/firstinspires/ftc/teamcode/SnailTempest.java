@@ -73,6 +73,11 @@ public class SnailTempest  extends OpMode {
     }
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
     public void loop() {
 
     }
