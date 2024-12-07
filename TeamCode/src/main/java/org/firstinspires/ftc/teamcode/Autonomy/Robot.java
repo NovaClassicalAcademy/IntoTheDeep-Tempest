@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Autonomy;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
 public class Robot {
     private final DcMotor FrontLeft;
     private final DcMotor FrontRight;
@@ -19,6 +20,7 @@ public class Robot {
     private final Servo ServoDump;
     private final Servo ServoLeft;
     private final Servo ServoRight;
+    private final Servo ServoGrip;
     private final Servo ServoHingeLeft;
     private final Servo ServoHingeRight;
 
@@ -31,6 +33,7 @@ public class Robot {
 
 
     public Robot(HardwareMap hardwareMap) {
+        telemetry.addData("Status", "Initialized");
         YEncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
         XEncoderWheel = hardwareMap.get(DcMotor.class, "StrafeWheel");
 
@@ -60,16 +63,16 @@ public class Robot {
         ServoDump = hardwareMap.get(Servo.class, "ServoDump");
         ServoLeft = hardwareMap.get(Servo.class, "ServoClawLeft");
         ServoRight = hardwareMap.get(Servo.class, "ServoClawRight");
+        ServoGrip = hardwareMap.get(Servo.class, "Gripper");
         ServoHingeLeft = hardwareMap.get(Servo.class, "HingeLeft");
         ServoHingeRight = hardwareMap.get(Servo.class, "HingeRight");
 
         Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
 
-        // TODO: get the gyro sensor's name and update mapping
-//        Gyro = hardwareMap.get(GyroSensor.class, "GyroSensor");
-
         StartingYPosition = YEncoderWheel.getCurrentPosition();
         StartingXPosition = XEncoderWheel.getCurrentPosition();
+
+
     }
 
     /// returns forward and backward distance
@@ -99,13 +102,13 @@ public class Robot {
         while (Math.abs(targetAngle - currentAngle) > angleRange) {
 
             if (targetAngle > currentAngle) {
-                //TODO: figure out if this is turning left or right---should be left
+                //this is left
                 FrontLeft.setPower(-0.15);
                 FrontRight.setPower(0.15);
                 BackLeft.setPower(-0.15);
                 BackRight.setPower(0.15);
             } else {
-                //TODO: do the opposite of above once direction is figured out----should be right
+                //this is right
                 FrontLeft.setPower(0.15);
                 FrontRight.setPower(-0.15);
                 BackLeft.setPower(0.15);
@@ -126,13 +129,13 @@ public class Robot {
 
         while (Math.abs(targetDistance - currentDistance) > rangeDistance) {
 
-            //TODO: is this going backwards or forwards-- forwards
+            //this is forwards
             if (targetDistance > currentDistance) {
                 FrontLeft.setPower(-0.5);
                 FrontRight.setPower(-0.5);
                 BackLeft.setPower(-0.5);
                 BackRight.setPower(-0.5);
-            } else { //TODO: is this going backwards or forwards-- backwards might need to change value
+            } else { //this is backwards; might need to change value
                 FrontLeft.setPower(0.5);
                 FrontRight.setPower(0.5);
                 BackLeft.setPower(0.5);
@@ -201,20 +204,32 @@ public class Robot {
 //        ServoHingeLeft.setPosition(0.575);
 //        ServoHingeRight.setPosition(0.675);
 //        }
-
-//    public void SpecimenClaw() { make new adjustments.
-//                //opened
-//                ServoLeft.setPosition();
-//                ServoRight.setPosition();
-//                //closed
-//                ServoLeft.setPosition();
-//                ServoRight.setPosition();
-//    }
-//
 //    public void LiftHinge() {
 //        ServoHingeLeft.setPosition(1.0);
 //        ServoHingeRight.setPosition(0.25);
 //    }
+
+    public void Claw() {
+        //opened
+        ServoLeft.setPosition(0);
+        ServoRight.setPosition(1);
+        //closed
+        ServoLeft.setPosition(0.44);
+        ServoRight.setPosition(0.56);
+    }
+
+    public void Gripper() {
+        double Open = ServoGrip.getPosition();
+        double Close = ServoGrip.getPosition();
+
+        //open
+        ServoGrip.setPosition(1);
+        //close
+        ServoGrip.setPosition(0);
+
+        telemetry.addData("Open", Open);
+        telemetry.addData("Close", Close);
+    }
 
     public void LowerLift(double lowerHeight) {
         lowerHeight = lowerHeight * -1;
@@ -233,30 +248,30 @@ public class Robot {
         LiftRight.setPower(0.0);
     }
 
-//    public void Dump() {
-//        double currentDumpPosition = ServoDump.getPosition();
-//        double endPosition = 1;
+    public void Dump() {
+        double currentDumpPosition = ServoDump.getPosition();
+        double endPosition = 1;
+
+        if (currentDumpPosition < endPosition){
+            ServoDump.setPosition(1);
+        }
+//            double startPosition = ServoDump.getPosition();
+//            double currentPosition = startPosition;
 //
-//        if (currentDumpPosition < endPosition){
-//            ServoDump.setPosition(1);
-//        }
-////            double startPosition = ServoDump.getPosition();
-////            double currentPosition = startPosition;
-////
-////            ServoDump.setPosition(0.25);
-////
-////            while (currentPosition < 0.24 || currentPosition > 0.26) {
-////                sleep(100);
-////                currentPosition = ServoDump.getPosition();
-////            }
-////
-////            sleep(3000);
-////            ServoDump.setPosition(startPosition);
-////
-////            while (currentPosition < startPosition - 0.01 || currentPosition > startPosition + 0.01) {
-////                sleep(100);
-////                currentPosition = ServoDump.getPosition();
+//            ServoDump.setPosition(0.25);
+//
+//            while (currentPosition < 0.24 || currentPosition > 0.26) {
+//                sleep(100);
+//                currentPosition = ServoDump.getPosition();
 //            }
+//
+//            sleep(3000);
+//            ServoDump.setPosition(startPosition);
+//
+//            while (currentPosition < startPosition - 0.01 || currentPosition > startPosition + 0.01) {
+//                sleep(100);
+//                currentPosition = ServoDump.getPosition();
+            }
 
     public void LiftLift (double highHeight){
         highHeight = highHeight * -1;
