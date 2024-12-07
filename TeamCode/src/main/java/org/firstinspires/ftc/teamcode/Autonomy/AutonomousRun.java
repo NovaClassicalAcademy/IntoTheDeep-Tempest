@@ -30,7 +30,8 @@ public class AutonomousRun extends LinearOpMode {
 //        sleep(1000);
 //        myRobot.Strafe(-15);
         myRobot.LiftLift(1250);
-//        myRobot.LowerLift(-1250);
+        sleep(5000);
+        myRobot.LowerLift(-1250);
 //        myRobot.Turn(5);
 //        myRobot.Claw();
 //        myRobot.Gripper();

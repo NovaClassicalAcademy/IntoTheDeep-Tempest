@@ -7,7 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
 public class Robot {
     private final DcMotor FrontLeft;
     private final DcMotor FrontRight;
@@ -23,7 +27,7 @@ public class Robot {
     private final Servo ServoGrip;
 //    private final Servo ServoHingeLeft;
 //    private final Servo ServoHingeRight;
-    private final GyroSensor Gyro;
+    private final IMU Gyro;
 
 
     private final double LiftPower = 0.5;
@@ -62,10 +66,10 @@ public class Robot {
         ServoDump = Opmode.hardwareMap.get(Servo.class, "ServoDump");
         ServoLeft = Opmode.hardwareMap.get(Servo.class, "ServoClawLeft");
         ServoRight = Opmode.hardwareMap.get(Servo.class, "ServoClawRight");
-        ServoGrip = Opmode.hardwareMap.get(Servo.class, "Gripper");
+        ServoGrip = Opmode.hardwareMap.get(Servo.class, "ServoGrip");
 //        ServoHingeLeft = Opmode.hardwareMap.get(Servo.class, "HingeLeft");
 //        ServoHingeRight = Opmode.hardwareMap.get(Servo.class, "HingeRight");
-        Gyro = Opmode.hardwareMap.get(GyroSensor.class, "GyroSensor");
+        Gyro = Opmode.hardwareMap.get(IMU.class, "GyroSensor");
 
         StartingYPosition = YEncoderWheel.getCurrentPosition();
         StartingXPosition = XEncoderWheel.getCurrentPosition();
@@ -80,7 +84,7 @@ public class Robot {
     }
 
    /// returns left and right distance
-   // not installed yet either
+    //not installed yet either
     private double getXDistance() {
         int ticksPerRotation = 2000;
         double Rotations = (double) (XEncoderWheel.getCurrentPosition() - StartingXPosition)/ ticksPerRotation;
@@ -89,11 +93,13 @@ public class Robot {
     }
 
     public void Turn(double degreeChange) {
-        //TODO: is our gyro a part of ModernRoboticsI2cGyro?
-        double currentAngle = Gyro.getHeading();
+        //counterclockwise is negative (-180) and clockwise is positive (180)
+        double currentAngle = Gyro.getRobotYawPitchRollAngles().getYaw();
         double targetAngle = currentAngle + degreeChange;
         //TODO: is this number accurate? Do we need to decrease?
         double angleRange = 2;
+
+        Gyro.resetYaw();
 
         while (Math.abs(targetAngle - currentAngle) > angleRange) {
 
@@ -113,11 +119,9 @@ public class Robot {
 
             FrontLeft.setPower(0.0);
             FrontRight.setPower(0.0);
-            BackLeft.setPower(0.0);
-            BackRight.setPower(0.0);
-        }
 
-        telemetry.addData("Angle", Gyro.getHeading());
+            telemetry.addData("Angle", Gyro.getRobotYawPitchRollAngles());
+        }
     }
 
     public void Move(double moveDistance) {
@@ -138,6 +142,8 @@ public class Robot {
                 FrontRight.setPower(0.5);
                 BackLeft.setPower(0.5);
                 BackRight.setPower(0.5);
+
+                telemetry.addData("Distance", getYDistance());
             }
 
             currentDistance = getYDistance();
@@ -147,8 +153,6 @@ public class Robot {
         FrontRight.setPower(0.0);
         BackLeft.setPower(0.0);
         BackRight.setPower(0.0);
-
-        telemetry.addData("Distance", getYDistance());
     }
 
 //        //NOTE: this if else determines the backward or forward movement
@@ -190,6 +194,8 @@ public class Robot {
             FrontRight.setPower(-0.5);
             BackLeft.setPower(-0.5);
             BackRight.setPower(0.5);
+
+            telemetry.addData("Distance", getXDistance());
             }
 
             currentStrafePosition = getXDistance();
@@ -198,8 +204,6 @@ public class Robot {
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
-
-        telemetry.addData("Distance", getXDistance());
     }
 
 //    public void LowerHinge(){
@@ -240,15 +244,16 @@ public class Robot {
         double heightRange = 3;
 
         while (Math.abs(targetPosition - currentLiftPosition) > heightRange) {
-                LiftLeft.setPower(-LiftPower);
-                LiftRight.setPower(-LiftPower);
+        LiftLeft.setPower(-LiftPower);
+        LiftRight.setPower(-LiftPower);
 
-                currentLiftPosition = LiftRight.getCurrentPosition();
-            }
+        currentLiftPosition = LiftRight.getCurrentPosition();
+
+        telemetry.addData("Low", LiftRight.getCurrentPosition());
+        }
 
         LiftLeft.setPower(0.0);
         LiftRight.setPower(0.0);
-        telemetry.addData("Low", LiftRight.getCurrentPosition());
     }
 
     public void Dump() {
@@ -287,8 +292,9 @@ public class Robot {
             LiftRight.setPower(LiftPower);
 
             currentLiftPosition = LiftRight.getCurrentPosition();
+
+            telemetry.addData("High", LiftRight.getCurrentPosition());
         }
-        telemetry.addData("High", LiftRight.getCurrentPosition());
     }
 
 //
