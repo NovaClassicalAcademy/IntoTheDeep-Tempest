@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autonomy;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,11 +11,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class Robot {
+
+    private final OpMode MyOpmode;
     private final DcMotor FrontLeft;
     private final DcMotor FrontRight;
     private final DcMotor BackLeft;
     private final DcMotor BackRight;
-    private final DcMotor XEncoderWheel;
+//    private final DcMotor XEncoderWheel;
     private final DcMotor YEncoderWheel;
     private final DcMotor LiftLeft;
     private final DcMotor LiftRight;
@@ -25,26 +25,25 @@ public class Robot {
     private final Servo ServoLeft;
     private final Servo ServoRight;
     private final Servo ServoGrip;
-//    private final Servo ServoHingeLeft;
-//    private final Servo ServoHingeRight;
+    private final Servo ServoHingeLeft;
+    private final Servo ServoHingeRight;
     private final IMU Gyro;
-
-
     private final double LiftPower = 0.5;
     private final int StartingYPosition;
-    private final int StartingXPosition;
+//    private final int StartingXPosition;
 
 
-    public Robot(OpMode Opmode) {
-        Opmode.telemetry.addData("Status", "Initialized");
-        YEncoderWheel = Opmode.hardwareMap.get(DcMotor.class, "EncoderWheel");
-        XEncoderWheel = Opmode.hardwareMap.get(DcMotor.class, "StrafeWheel");
+    public Robot(OpMode opMode) {
+        MyOpmode = opMode;
+        MyOpmode.telemetry.addData("Status", "Initialized");
+        YEncoderWheel = MyOpmode.hardwareMap.get(DcMotor.class, "EncoderWheel");
+//        XEncoderWheel = MyOpmode.hardwareMap.get(DcMotor.class, "StrafeWheel");
 
-        FrontLeft = Opmode.hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight = Opmode.hardwareMap.get(DcMotor.class, "FrontRight");
+        FrontLeft = MyOpmode.hardwareMap.get(DcMotor.class, "FrontLeft");
+        FrontRight = MyOpmode.hardwareMap.get(DcMotor.class, "FrontRight");
 
-        BackLeft = Opmode.hardwareMap.get(DcMotor.class, "BackLeft");
-        BackRight = Opmode.hardwareMap.get(DcMotor.class, "BackRight");
+        BackLeft = MyOpmode.hardwareMap.get(DcMotor.class, "BackLeft");
+        BackRight = MyOpmode.hardwareMap.get(DcMotor.class, "BackRight");
 
         FrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         FrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -57,22 +56,22 @@ public class Robot {
         BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        LiftLeft = Opmode.hardwareMap.get(DcMotor.class, "LiftLeft");
-        LiftRight = Opmode.hardwareMap.get(DcMotor.class, "LiftRight");
+        LiftLeft = MyOpmode.hardwareMap.get(DcMotor.class, "LiftLeft");
+        LiftRight = MyOpmode.hardwareMap.get(DcMotor.class, "LiftRight");
 
         LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         LiftRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        ServoDump = Opmode.hardwareMap.get(Servo.class, "ServoDump");
-        ServoLeft = Opmode.hardwareMap.get(Servo.class, "ServoClawLeft");
-        ServoRight = Opmode.hardwareMap.get(Servo.class, "ServoClawRight");
-        ServoGrip = Opmode.hardwareMap.get(Servo.class, "ServoGrip");
-//        ServoHingeLeft = Opmode.hardwareMap.get(Servo.class, "HingeLeft");
-//        ServoHingeRight = Opmode.hardwareMap.get(Servo.class, "HingeRight");
-        Gyro = Opmode.hardwareMap.get(IMU.class, "GyroSensor");
+        ServoDump = MyOpmode.hardwareMap.get(Servo.class, "ServoDump");
+        ServoLeft = MyOpmode.hardwareMap.get(Servo.class, "ServoClawLeft");
+        ServoRight = MyOpmode.hardwareMap.get(Servo.class, "ServoClawRight");
+        ServoGrip = MyOpmode.hardwareMap.get(Servo.class, "ServoGrip");
+        ServoHingeLeft = MyOpmode.hardwareMap.get(Servo.class, "HingeLeft");
+        ServoHingeRight = MyOpmode.hardwareMap.get(Servo.class, "HingeRight");
+        Gyro = MyOpmode.hardwareMap.get(IMU.class, "GyroSensor");
 
         StartingYPosition = YEncoderWheel.getCurrentPosition();
-        StartingXPosition = XEncoderWheel.getCurrentPosition();
+//        StartingXPosition = XEncoderWheel.getCurrentPosition();
     }
 
     /// returns forward and backward distance
@@ -85,12 +84,12 @@ public class Robot {
 
    /// returns left and right distance
     //not installed yet either
-    private double getXDistance() {
-        int ticksPerRotation = 2000;
-        double Rotations = (double) (XEncoderWheel.getCurrentPosition() - StartingXPosition)/ ticksPerRotation;
-        double strafeWheelDiameter = 1.82;
-        return Rotations * strafeWheelDiameter * Math.PI;
-    }
+//    private double getXDistance() {
+//        int ticksPerRotation = 2000;
+//        double Rotations = (double) (XEncoderWheel.getCurrentPosition() - StartingXPosition)/ ticksPerRotation;
+//        double strafeWheelDiameter = 1.82;
+//        return Rotations * strafeWheelDiameter * Math.PI;
+//    }
 
     public void Turn(double degreeChange) {
         //counterclockwise is negative (-180) and clockwise is positive (180)
@@ -120,7 +119,8 @@ public class Robot {
             FrontLeft.setPower(0.0);
             FrontRight.setPower(0.0);
 
-            telemetry.addData("Angle", Gyro.getRobotYawPitchRollAngles());
+            MyOpmode.telemetry.addData("Angle", Gyro.getRobotYawPitchRollAngles());
+            MyOpmode.telemetry.update();
         }
     }
 
@@ -143,7 +143,8 @@ public class Robot {
                 BackLeft.setPower(0.5);
                 BackRight.setPower(0.5);
 
-                telemetry.addData("Distance", getYDistance());
+                MyOpmode.telemetry.addData("Distance", getYDistance());
+                MyOpmode.telemetry.update();
             }
 
             currentDistance = getYDistance();
@@ -177,43 +178,43 @@ public class Robot {
 //            sleep(100); //TODO: decrease if i need to sample more often to get more accurate read on movement
 //            currentDistance = GetDistance();
 //        }
-    public void Strafe(double strafeDistance) {
-        double currentStrafePosition = getXDistance();
-        double targetStrafeDistance = currentStrafePosition + strafeDistance;
-        double distanceRange = 5; //TODO: does this need to be adjusted?
-
-        while (Math.abs(targetStrafeDistance - currentStrafePosition) > distanceRange) {
-            //TODO: is this left or right--should be right
-            if (targetStrafeDistance > currentStrafePosition){
-            FrontLeft.setPower(-0.5);
-            FrontRight.setPower(0.5);
-            BackLeft.setPower(0.5);
-            BackRight.setPower(-0.5);
-            } else { //TODO: should be left
-            FrontLeft.setPower(0.5);
-            FrontRight.setPower(-0.5);
-            BackLeft.setPower(-0.5);
-            BackRight.setPower(0.5);
-
-            telemetry.addData("Distance", getXDistance());
-            }
-
-            currentStrafePosition = getXDistance();
-        }
-        FrontLeft.setPower(0);
-        FrontRight.setPower(0);
-        BackLeft.setPower(0);
-        BackRight.setPower(0);
-    }
-
-//    public void LowerHinge(){
-//        ServoHingeLeft.setPosition(0.575);
-//        ServoHingeRight.setPosition(0.675);
+//    public void Strafe(double strafeDistance) {
+//        double currentStrafePosition = getXDistance();
+//        double targetStrafeDistance = currentStrafePosition + strafeDistance;
+//        double distanceRange = 5; //TODO: does this need to be adjusted?
+//
+//        while (Math.abs(targetStrafeDistance - currentStrafePosition) > distanceRange) {
+//            //TODO: is this left or right--should be right
+//            if (targetStrafeDistance > currentStrafePosition){
+//            FrontLeft.setPower(-0.5);
+//            FrontRight.setPower(0.5);
+//            BackLeft.setPower(0.5);
+//            BackRight.setPower(-0.5);
+//            } else { //TODO: should be left
+//            FrontLeft.setPower(0.5);
+//            FrontRight.setPower(-0.5);
+//            BackLeft.setPower(-0.5);
+//            BackRight.setPower(0.5);
+//
+//            telemetry.addData("Distance", getXDistance());
+//            }
+//
+//            currentStrafePosition = getXDistance();
 //        }
-//    public void LiftHinge() {
-//        ServoHingeLeft.setPosition(1.0);
-//        ServoHingeRight.setPosition(0.25);
+//        FrontLeft.setPower(0);
+//        FrontRight.setPower(0);
+//        BackLeft.setPower(0);
+//        BackRight.setPower(0);
 //    }
+
+    public void LowerHinge(){
+        ServoHingeLeft.setPosition(0.575);
+        ServoHingeRight.setPosition(0.675);
+        }
+    public void LiftHinge() {
+        ServoHingeLeft.setPosition(1.0);
+        ServoHingeRight.setPosition(0.25);
+    }
 
     public void Claw() {
         //opened
@@ -233,23 +234,25 @@ public class Robot {
         //close
         ServoGrip.setPosition(0);
 
-        telemetry.addData("OpenClaw", OpenClaw);
-        telemetry.addData("CloseClose", CloseClaw);
+        MyOpmode.telemetry.addData("OpenClaw", OpenClaw);
+        MyOpmode.telemetry.addData("CloseClose", CloseClaw);
+        MyOpmode.telemetry.update();
     }
 
     public void LowerLift(double lowerHeight) {
-        lowerHeight = lowerHeight * -1;
         double currentLiftPosition = LiftRight.getCurrentPosition();
         double targetPosition = currentLiftPosition + lowerHeight;
         double heightRange = 3;
 
         while (Math.abs(targetPosition - currentLiftPosition) > heightRange) {
-        LiftLeft.setPower(-LiftPower);
-        LiftRight.setPower(-LiftPower);
+
+        LiftLeft.setPower(LiftPower);
+        LiftRight.setPower(LiftPower);
 
         currentLiftPosition = LiftRight.getCurrentPosition();
 
-        telemetry.addData("Low", LiftRight.getCurrentPosition());
+        MyOpmode.telemetry.addData("Current Lift Position", currentLiftPosition);
+        MyOpmode.telemetry.update();
         }
 
         LiftLeft.setPower(0.0);
@@ -282,19 +285,24 @@ public class Robot {
             }
 
     public void LiftLift (double highHeight){
-        highHeight = highHeight * -1;
         double currentLiftPosition = LiftRight.getCurrentPosition();
         double targetPosition = currentLiftPosition + highHeight;
         double heightRange = 6;
 
         while (Math.abs(targetPosition - currentLiftPosition) > heightRange) {
-            LiftLeft.setPower(LiftPower);
-            LiftRight.setPower(LiftPower);
+
+            LiftLeft.setPower(-LiftPower);
+            LiftRight.setPower(-LiftPower);
 
             currentLiftPosition = LiftRight.getCurrentPosition();
 
-            telemetry.addData("High", LiftRight.getCurrentPosition());
+            MyOpmode.telemetry.addData("Current Lift Position", currentLiftPosition);
+            MyOpmode.telemetry.update();
         }
+    }
+
+    public double GetLiftCurrentPosition (){
+        return LiftRight.getCurrentPosition();
     }
 
 //

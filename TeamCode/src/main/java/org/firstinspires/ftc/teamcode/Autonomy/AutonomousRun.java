@@ -25,6 +25,10 @@ public class AutonomousRun extends LinearOpMode {
 
         waitForStart();
 //
+        telemetry.addData("Lift Position", myRobot.GetLiftCurrentPosition());
+        telemetry.update();
+
+        sleep();
 //        //TODO: can't stop by itself. Maybe get new encoder to read left to right. might need to be timed.
 //        myRobot.Strafe(15);
 //        sleep(1000);
