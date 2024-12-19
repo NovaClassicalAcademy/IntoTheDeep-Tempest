@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 @Autonomous(name = "ParkAutoTestRun", group = "Autonomous")
 
 
@@ -24,25 +23,18 @@ public class AutonomousRun extends LinearOpMode {
         telemetry.addData("Status", "Robot initialized");
 
         waitForStart();
-//
         telemetry.addData("Lift Position", myRobot.GetLiftCurrentPosition());
         telemetry.update();
+        sleep(2000);
 
-        sleep();
-//        //TODO: can't stop by itself. Maybe get new encoder to read left to right. might need to be timed.
-//        myRobot.Strafe(15);
-//        sleep(1000);
-//        myRobot.Strafe(-15);
-        myRobot.LiftLift(1250);
-        sleep(5000);
-        myRobot.LowerLift(-1250);
-//        myRobot.Turn(5);
-//        myRobot.Claw();
-//        myRobot.Gripper();
-//        myRobot.Dump();
+        myRobot.MoveLift(8.0); //TODO: is this halfway? find full and low
+        sleep(2000);
+        myRobot.Dump();
+        sleep(2000);
+        myRobot.MoveLift(0.5);
+        sleep(2000);
 
 
-//
 //        //positive is going forward, negative is going back. might need to change powers. right is lighter than left side.
 //        myRobot.Move(-20);
 
