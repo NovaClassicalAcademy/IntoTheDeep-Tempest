@@ -25,14 +25,26 @@ public class AutonomousRun extends LinearOpMode {
         waitForStart();
         telemetry.addData("Lift Position", myRobot.GetLiftCurrentPosition());
         telemetry.update();
+        telemetry.addData("Final Position", myRobot.GetLiftCurrentPosition());
         sleep(2000);
 
-        myRobot.MoveLift(8.0); //TODO: is this halfway? find full and low
+        myRobot.LiftHinge();
         sleep(2000);
-        myRobot.Dump();
+        myRobot.LowerHinge();
         sleep(2000);
-        myRobot.MoveLift(0.5);
+        myRobot.OpenClaw();
         sleep(2000);
+        myRobot.CloseClaw();
+        myRobot.OpenGripper();
+        myRobot.CloseGripper();
+//        works.
+//        myRobot.MoveLift(2900, 6);
+//        myRobot.Dump();
+//        sleep(2000);
+//        myRobot.RetractDump();
+//        sleep(2000);
+//        myRobot.MoveLift(10, 6);
+//        sleep(2000);
 
 
 //        //positive is going forward, negative is going back. might need to change powers. right is lighter than left side.
