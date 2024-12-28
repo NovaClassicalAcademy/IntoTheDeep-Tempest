@@ -17,7 +17,7 @@ public class Robot {
     private final DcMotor FrontRight;
     private final DcMotor BackLeft;
     private final DcMotor BackRight;
-    //    private final DcMotor XEncoderWheel;
+//    private final DcMotor XEncoderWheel;
     private final DcMotor YEncoderWheel;
     private final DcMotor LiftLeft;
     private final DcMotor LiftRight;
@@ -27,10 +27,9 @@ public class Robot {
     private final Servo ServoGrip;
     private final Servo ServoHingeLeft;
     private final Servo ServoHingeRight;
-    private final IMU Gyro;
+    private final IMU MyGyro;
     public final double LiftPower = 0.5;
     private final int StartingYPosition;
-    private final int StartingLiftPosition;
 
 //    private final int StartingXPosition;
 
@@ -80,10 +79,9 @@ public class Robot {
         ServoGrip = MyOpmode.hardwareMap.get(Servo.class, "ServoGrip");
         ServoHingeLeft = MyOpmode.hardwareMap.get(Servo.class, "HingeLeft");
         ServoHingeRight = MyOpmode.hardwareMap.get(Servo.class, "HingeRight");
-        Gyro = MyOpmode.hardwareMap.get(IMU.class, "GyroSensor");
+        MyGyro = MyOpmode.hardwareMap.get(IMU.class, "GyroSensor");
 
         StartingYPosition = YEncoderWheel.getCurrentPosition();
-        StartingLiftPosition = LiftRight.getCurrentPosition();
 //        StartingXPosition = XEncoderWheel.getCurrentPosition();
     }
 
@@ -93,13 +91,6 @@ public class Robot {
         double Rotations = (double) (YEncoderWheel.getCurrentPosition() - StartingYPosition) / ticksPerRotation;
         double encoderWheelDiameter = 1.82;
         return Rotations * encoderWheelDiameter * Math.PI;
-    }
-
-    private double getLiftDistance() {
-        int ticksPerRotation = 2000;
-        double Rotations = (double) (LiftRight.getCurrentPosition() - StartingLiftPosition) / ticksPerRotation;
-        double encoderWheelDiameter = 1.82;
-        return Rotations * encoderWheelDiameter * Math.PI* -1;
     }
 
     public double GetLiftCurrentPosition() {
@@ -117,61 +108,66 @@ public class Robot {
 //    }
     public void Turn(double degreeChange) {
         //counterclockwise is negative (-180) and clockwise is positive (180)
-        double currentAngle = Gyro.getRobotYawPitchRollAngles().getYaw();
-        double targetAngle = currentAngle + degreeChange;
+        MyGyro.resetYaw();
+        double currentAngle = MyGyro.getRobotYawPitchRollAngles().getYaw();
         //TODO: is this number accurate? Do we need to decrease?
-        double angleRange = 2;
+        double angleRange = 0.5;
 
-        Gyro.resetYaw();
+        if (degreeChange < 0) {
+            //this is right
+            FrontLeft.setPower(0.25);
+            FrontRight.setPower(-0.25);
+            BackLeft.setPower(0.25);
+            BackRight.setPower(-0.25);
+        } else if (degreeChange > 0) {
+            //this is left
+            FrontLeft.setPower(-0.25);
+            FrontRight.setPower(0.25);
+            BackLeft.setPower(-0.25);
+            BackRight.setPower(0.25);
+        }
 
-        while (Math.abs(targetAngle - currentAngle) > angleRange) {
+        while (Math.abs(degreeChange) - Math.abs(currentAngle) > angleRange) {
 
-            if (targetAngle > currentAngle) {
-                //this is left
-                FrontLeft.setPower(-0.15);
-                FrontRight.setPower(0.15);
-                BackLeft.setPower(-0.15);
-                BackRight.setPower(0.15);
-            } else {
-                //this is right
-                FrontLeft.setPower(0.15);
-                FrontRight.setPower(-0.15);
-                BackLeft.setPower(0.15);
-                BackRight.setPower(-0.15);
-            }
+           currentAngle = MyGyro.getRobotYawPitchRollAngles().getYaw();
 
-            FrontLeft.setPower(0.0);
-            FrontRight.setPower(0.0);
-
-            MyOpmode.telemetry.addData("Angle", Gyro.getRobotYawPitchRollAngles());
+            MyOpmode.telemetry.addData("Angle", MyGyro.getRobotYawPitchRollAngles());
+            MyOpmode.telemetry.addData("Yaw", currentAngle);
             MyOpmode.telemetry.update();
         }
+
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+
     }
+
 
     public void Move(double moveDistance) {
         double currentDistance = getYDistance();
         double targetDistance = currentDistance + moveDistance;
         double rangeDistance = 1.5;
 
+        //this is forwards
+        if (targetDistance > currentDistance) {
+            FrontLeft.setPower(-0.5);
+            FrontRight.setPower(-0.5);
+            BackLeft.setPower(-0.5);
+            BackRight.setPower(-0.5);
+        } else { //this is backwards; might need to change value
+            FrontLeft.setPower(0.5);
+            FrontRight.setPower(0.5);
+            BackLeft.setPower(0.5);
+            BackRight.setPower(0.5);
+        }
+
         while (Math.abs(targetDistance - currentDistance) > rangeDistance) {
 
-            //this is forwards
-            if (targetDistance > currentDistance) {
-                FrontLeft.setPower(-0.5);
-                FrontRight.setPower(-0.5);
-                BackLeft.setPower(-0.5);
-                BackRight.setPower(-0.5);
-            } else { //this is backwards; might need to change value
-                FrontLeft.setPower(0.5);
-                FrontRight.setPower(0.5);
-                BackLeft.setPower(0.5);
-                BackRight.setPower(0.5);
-
-                MyOpmode.telemetry.addData("Distance", getYDistance());
-                MyOpmode.telemetry.update();
-            }
-
             currentDistance = getYDistance();
+
+            MyOpmode.telemetry.addData("Distance", getYDistance());
+            MyOpmode.telemetry.update();
         }
 
         FrontLeft.setPower(0.0);
@@ -185,30 +181,34 @@ public class Robot {
 //        double targetStrafeDistance = currentStrafePosition + strafeDistance;
 //        double distanceRange = 5; //TODO: does this need to be adjusted?
 //
-//        while (Math.abs(targetStrafeDistance - currentStrafePosition) > distanceRange) {
-//            //TODO: is this left or right--should be right
-//            if (targetStrafeDistance > currentStrafePosition){
+//        //TODO: is this left or right--should be right
+//        if (targetStrafeDistance > currentStrafePosition){
 //            FrontLeft.setPower(-0.5);
 //            FrontRight.setPower(0.5);
 //            BackLeft.setPower(0.5);
 //            BackRight.setPower(-0.5);
-//            } else { //TODO: should be left
+//        } else { //TODO: should be left
 //            FrontLeft.setPower(0.5);
 //            FrontRight.setPower(-0.5);
 //            BackLeft.setPower(-0.5);
 //            BackRight.setPower(0.5);
+//        }
 //
-//            telemetry.addData("Distance", getXDistance());
-//            }
+//        while (Math.abs(targetStrafeDistance - currentStrafePosition) > distanceRange) {
 //
 //            currentStrafePosition = getXDistance();
+//
+//            MyOpmode.telemetry.addData("Distance", getXDistance());
+//            MyOpmode.telemetry.update();
 //        }
+//
 //        FrontLeft.setPower(0);
 //        FrontRight.setPower(0);
 //        BackLeft.setPower(0);
 //        BackRight.setPower(0);
 //    }
 
+    ///HINGE
     public void LowerHinge() {
         double currentHingePosition = ServoHingeLeft.getPosition();
 
@@ -237,92 +237,86 @@ public class Robot {
             }
     }
 
+    ///CLAW
     public void OpenClaw() {
-        double currentClawPosition = ServoLeft.getPosition();
 
         ServoLeft.setPosition(0.0);
         ServoRight.setPosition(1.0);
 
-        while (currentClawPosition != 0.0) {
-            currentClawPosition = ServoDump.getPosition();
+        while (ServoLeft.getPosition() != 0.0 && ServoRight.getPosition() != 1.0) {
 
-            MyOpmode.telemetry.addData("Claw Rotation", currentClawPosition);
+            MyOpmode.telemetry.addData("Left Claw Rotation", ServoLeft.getPosition());
+            MyOpmode.telemetry.addData("Right Claw Rotation", ServoRight.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
     public void CloseClaw() {
-        double currentClawPosition = ServoLeft.getPosition();
 
         ServoLeft.setPosition(0.44);
         ServoRight.setPosition(0.56);
 
-        while (currentClawPosition != 0.37) {
-            currentClawPosition = ServoDump.getPosition();
+        while (ServoLeft.getPosition() != 0.44 && ServoRight.getPosition() != 0.56) {
 
-            MyOpmode.telemetry.addData("Claw Rotation", currentClawPosition);
+            MyOpmode.telemetry.addData("Left Claw Rotation", ServoLeft.getPosition());
+            MyOpmode.telemetry.addData("Right Claw Rotation", ServoRight.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
+    ///GRIPPER
     public void OpenGripper() {
-        double currentGripPosition = ServoGrip.getPosition();
 
-        ServoLeft.setPosition(0.15);
+        ServoGrip.setPosition(0.15);
 
-        while (currentGripPosition != 0.15) {
-            currentGripPosition = ServoGrip.getPosition();
+        while (ServoGrip.getPosition() != 0.15) {
 
-            MyOpmode.telemetry.addData("Grip Rotation", currentGripPosition);
+            MyOpmode.telemetry.addData("Grip Rotation", ServoGrip.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
     public void CloseGripper(){
-        double currentGripPosition = ServoGrip.getPosition();
 
-        ServoLeft.setPosition(0.8);
+        ServoGrip.setPosition(0.8);
 
-        while (currentGripPosition != 0.3) {
-            currentGripPosition = ServoGrip.getPosition();
+        while (ServoGrip.getPosition() != 0.8) {
 
-            MyOpmode.telemetry.addData("Grip Rotation", currentGripPosition);
+            MyOpmode.telemetry.addData("Grip Rotation", ServoGrip.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
+    ///DUMP
     public void Dump() {
-        double currentDumpPosition = ServoDump.getPosition();
         double endPosition = 0.25;
 
         ServoDump.setPosition(endPosition);
 
-        while (currentDumpPosition != endPosition) {
-            currentDumpPosition = ServoDump.getPosition();
+        while (ServoDump.getPosition() != endPosition) {
 
-            MyOpmode.telemetry.addData("Dump Rotation", currentDumpPosition);
+            MyOpmode.telemetry.addData("Dump Rotation", ServoDump.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
     public void RetractDump() {
-        double currentDumpPosition = ServoDump.getPosition();
         double endPosition = 1;
 
        ServoDump.setPosition(endPosition);
 
-        while (currentDumpPosition != endPosition){
-            currentDumpPosition = ServoDump.getPosition();
+        while (ServoDump.getPosition() != endPosition){
 
-            MyOpmode.telemetry.addData("Retract Rotation", currentDumpPosition);
+            MyOpmode.telemetry.addData("Retract Rotation", ServoDump.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
+    ///LIFT, make sure max is long enough to do function
     public void MoveLift(double targetPosition,double maxTimeInSeconds) {
 //        double currentLiftPosition = getLiftDistance();
         double currentLiftPosition = LiftLeft.getCurrentPosition()* -1;
-        double heightRange = 7;
+        double heightRange = 1;
         double liftPower = -LiftPower;
 
         if (targetPosition < currentLiftPosition){
@@ -343,7 +337,6 @@ public class Robot {
             LiftLeft.setPower(liftPower);
             LiftRight.setPower(liftPower);
 
-//            currentLiftPosition = getLiftDistance();
             currentLiftPosition = LiftLeft.getCurrentPosition()* -1;
 
             MyOpmode.telemetry.addData("Current Lift Position", currentLiftPosition);

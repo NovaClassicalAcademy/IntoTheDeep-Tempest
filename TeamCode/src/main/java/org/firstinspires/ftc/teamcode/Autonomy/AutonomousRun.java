@@ -27,24 +27,35 @@ public class AutonomousRun extends LinearOpMode {
         telemetry.update();
         telemetry.addData("Final Position", myRobot.GetLiftCurrentPosition());
         sleep(2000);
+// working
+//        myRobot.LowerHinge();
+//        sleep(2000);
+//        myRobot.LiftHinge();
+//        sleep(2000);
+//        myRobot.CloseClaw();
+//        sleep(2000);
+//        myRobot.OpenClaw();
+//        sleep(2000);
+//        myRobot.OpenGripper();
+//        sleep(2000);
+//        myRobot.CloseGripper();
+//        sleep(2000);
+//
+//        myRobot.Turn(180);
+//        sleep(2000);
+//        myRobot.Move(10);
+//        sleep(2000);
+//        myRobot.Turn(-90);
+//        sleep(2000);
 
-        myRobot.LiftHinge();
+        myRobot.MoveLift(2900, 10);
         sleep(2000);
-        myRobot.LowerHinge();
+        myRobot.Dump();
         sleep(2000);
-        myRobot.OpenClaw();
+        myRobot.RetractDump();
         sleep(2000);
-        myRobot.CloseClaw();
-        myRobot.OpenGripper();
-        myRobot.CloseGripper();
-//        works.
-//        myRobot.MoveLift(2900, 6);
-//        myRobot.Dump();
-//        sleep(2000);
-//        myRobot.RetractDump();
-//        sleep(2000);
-//        myRobot.MoveLift(10, 6);
-//        sleep(2000);
+        myRobot.MoveLift(10, 6);
+        sleep(2000);
 
 
 //        //positive is going forward, negative is going back. might need to change powers. right is lighter than left side.
