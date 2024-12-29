@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class Robot {
-
     private final OpMode MyOpmode;
     private final DcMotor FrontLeft;
     private final DcMotor FrontRight;
@@ -115,16 +114,16 @@ public class Robot {
 
         if (degreeChange < 0) {
             //this is right
-            FrontLeft.setPower(0.25);
-            FrontRight.setPower(-0.25);
-            BackLeft.setPower(0.25);
-            BackRight.setPower(-0.25);
+            FrontLeft.setPower(0.45);
+            FrontRight.setPower(-0.45);
+            BackLeft.setPower(0.45);
+            BackRight.setPower(-0.45);
         } else if (degreeChange > 0) {
             //this is left
-            FrontLeft.setPower(-0.25);
-            FrontRight.setPower(0.25);
-            BackLeft.setPower(-0.25);
-            BackRight.setPower(0.25);
+            FrontLeft.setPower(-0.45);
+            FrontRight.setPower(0.45);
+            BackLeft.setPower(-0.45);
+            BackRight.setPower(0.45);
         }
 
         while (Math.abs(degreeChange) - Math.abs(currentAngle) > angleRange) {
@@ -224,22 +223,21 @@ public class Robot {
     }
 
     public void LiftHinge() {
-            double currentHingePosition = ServoHingeLeft.getPosition();
+        double currentHingePosition = ServoHingeLeft.getPosition();
 
-            ServoHingeLeft.setPosition(1.0);
-            ServoHingeRight.setPosition(0.25);
+        ServoHingeLeft.setPosition(1.0);
+        ServoHingeRight.setPosition(0.25);
 
-            while (currentHingePosition != 1.0) {
-                currentHingePosition = ServoHingeLeft.getPosition();
+        while (currentHingePosition != 1.0) {
+            currentHingePosition = ServoHingeLeft.getPosition();
 
-                MyOpmode.telemetry.addData("Hinge Rotation", currentHingePosition);
-                MyOpmode.telemetry.update();
-            }
+            MyOpmode.telemetry.addData("Hinge Rotation", currentHingePosition);
+            MyOpmode.telemetry.update();
+        }
     }
 
     ///CLAW
     public void OpenClaw() {
-
         ServoLeft.setPosition(0.0);
         ServoRight.setPosition(1.0);
 
@@ -252,7 +250,6 @@ public class Robot {
     }
 
     public void CloseClaw() {
-
         ServoLeft.setPosition(0.44);
         ServoRight.setPosition(0.56);
 
@@ -266,7 +263,6 @@ public class Robot {
 
     ///GRIPPER
     public void OpenGripper() {
-
         ServoGrip.setPosition(0.15);
 
         while (ServoGrip.getPosition() != 0.15) {
@@ -277,7 +273,6 @@ public class Robot {
     }
 
     public void CloseGripper(){
-
         ServoGrip.setPosition(0.8);
 
         while (ServoGrip.getPosition() != 0.8) {
@@ -303,7 +298,7 @@ public class Robot {
     public void RetractDump() {
         double endPosition = 1;
 
-       ServoDump.setPosition(endPosition);
+        ServoDump.setPosition(endPosition);
 
         while (ServoDump.getPosition() != endPosition){
 
@@ -346,8 +341,8 @@ public class Robot {
         }
 
         //Once it is in range
-        LiftLeft.setPower(0);
-        LiftRight.setPower(0);
+        LiftLeft.setPower(0.01);
+        LiftRight.setPower(0.01);
 
         MyOpmode.telemetry.addData("Final Lift Position", currentLiftPosition);
         MyOpmode.telemetry.update();
