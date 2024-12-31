@@ -16,7 +16,7 @@ public class Robot {
     private final DcMotor FrontRight;
     private final DcMotor BackLeft;
     private final DcMotor BackRight;
-//    private final DcMotor XEncoderWheel;
+    //    private final DcMotor XEncoderWheel;
     private final DcMotor YEncoderWheel;
     private final DcMotor LiftLeft;
     private final DcMotor LiftRight;
@@ -128,7 +128,7 @@ public class Robot {
 
         while (Math.abs(degreeChange) - Math.abs(currentAngle) > angleRange) {
 
-           currentAngle = MyGyro.getRobotYawPitchRollAngles().getYaw();
+            currentAngle = MyGyro.getRobotYawPitchRollAngles().getYaw();
 
             MyOpmode.telemetry.addData("Angle", MyGyro.getRobotYawPitchRollAngles());
             MyOpmode.telemetry.addData("Yaw", currentAngle);
@@ -207,7 +207,7 @@ public class Robot {
 //        BackRight.setPower(0);
 //    }
 
-    ///HINGE
+    /// HINGE
     public void LowerHinge() {
         double currentHingePosition = ServoHingeLeft.getPosition();
 
@@ -236,7 +236,7 @@ public class Robot {
         }
     }
 
-    ///CLAW
+    /// CLAW
     public void OpenClaw() {
         ServoLeft.setPosition(0.0);
         ServoRight.setPosition(1.0);
@@ -261,7 +261,7 @@ public class Robot {
         }
     }
 
-    ///GRIPPER
+    /// GRIPPER
     public void OpenGripper() {
         ServoGrip.setPosition(0.15);
 
@@ -272,7 +272,7 @@ public class Robot {
         }
     }
 
-    public void CloseGripper(){
+    public void CloseGripper() {
         ServoGrip.setPosition(0.8);
 
         while (ServoGrip.getPosition() != 0.8) {
@@ -282,7 +282,7 @@ public class Robot {
         }
     }
 
-    ///DUMP
+    /// DUMP
     public void Dump() {
         double endPosition = 0.25;
 
@@ -300,51 +300,78 @@ public class Robot {
 
         ServoDump.setPosition(endPosition);
 
-        while (ServoDump.getPosition() != endPosition){
+        while (ServoDump.getPosition() != endPosition) {
 
             MyOpmode.telemetry.addData("Retract Rotation", ServoDump.getPosition());
             MyOpmode.telemetry.update();
         }
     }
 
-    ///LIFT, make sure max is long enough to do function
-    public void MoveLift(double targetPosition,double maxTimeInSeconds) {
-//        double currentLiftPosition = getLiftDistance();
-        double currentLiftPosition = LiftLeft.getCurrentPosition()* -1;
+    /// LIFT, make sure max is long enough to do function
+    public void ExtendLift(double liftDistance, double maxTimeInSeconds) {
+        double currentLiftPosition = LiftLeft.getCurrentPosition() * -1;
+        double targetPosition = currentLiftPosition + liftDistance;
         double heightRange = 1;
         double liftPower = -LiftPower;
 
-        if (targetPosition < currentLiftPosition){
-            liftPower = LiftPower;
+        if (currentLiftPosition != targetPosition){
+            currentLiftPosition = 2900;
         }
 
         double startTime = MyOpmode.getRuntime();
 
         while (Math.abs(currentLiftPosition - targetPosition) > heightRange) {
-            double elapsedTime = MyOpmode.getRuntime()-startTime;
+            double elapsedTime = MyOpmode.getRuntime() - startTime;
             MyOpmode.telemetry.addData("Elapsed", elapsedTime);
 
-            if (elapsedTime >= maxTimeInSeconds){
+            if (elapsedTime >= maxTimeInSeconds) {
                 MyOpmode.telemetry.addData("Error", "Lift time out");
                 break;
             }
-
-            LiftLeft.setPower(liftPower);
-            LiftRight.setPower(liftPower);
-
-            currentLiftPosition = LiftLeft.getCurrentPosition()* -1;
 
             MyOpmode.telemetry.addData("Current Lift Position", currentLiftPosition);
             MyOpmode.telemetry.update();
             MyOpmode.telemetry.addData("Target Position", targetPosition);
             MyOpmode.telemetry.update();
+
         }
-
-        //Once it is in range
-        LiftLeft.setPower(0.01);
-        LiftRight.setPower(0.01);
-
-        MyOpmode.telemetry.addData("Final Lift Position", currentLiftPosition);
-        MyOpmode.telemetry.update();
+//    public void MoveLift(double targetPosition,double maxTimeInSeconds) {
+//        double currentLiftPosition = LiftLeft.getCurrentPosition()* -1;
+//        double heightRange = 1;
+//        double liftPower = -LiftPower;
+//
+//        if (targetPosition < currentLiftPosition){
+//            liftPower = LiftPower;
+//        }
+//
+//        double startTime = MyOpmode.getRuntime();
+//
+//        while (Math.abs(currentLiftPosition - targetPosition) > heightRange) {
+//            double elapsedTime = MyOpmode.getRuntime()-startTime;
+//            MyOpmode.telemetry.addData("Elapsed", elapsedTime);
+//
+//            if (elapsedTime >= maxTimeInSeconds){
+//                MyOpmode.telemetry.addData("Error", "Lift time out");
+//                break;
+//            }
+//
+//            LiftLeft.setPower(liftPower);
+//            LiftRight.setPower(liftPower);
+//
+//            currentLiftPosition = LiftLeft.getCurrentPosition()* -1;
+//
+//            MyOpmode.telemetry.addData("Current Lift Position", currentLiftPosition);
+//            MyOpmode.telemetry.update();
+//            MyOpmode.telemetry.addData("Target Position", targetPosition);
+//            MyOpmode.telemetry.update();
+//        }
+//
+//        //Once it is in range
+//        LiftLeft.setPower(0.01);
+//        LiftRight.setPower(0.01);
+//
+//        MyOpmode.telemetry.addData("Final Lift Position", currentLiftPosition);
+//        MyOpmode.telemetry.update();
+//    }
     }
 }
