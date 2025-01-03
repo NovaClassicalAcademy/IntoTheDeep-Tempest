@@ -12,16 +12,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class AutonomousRun extends LinearOpMode {
     private void TestLandD (Robot myRobot){
-        myRobot.MoveLift(2900, 10);
+        myRobot.ExtendLift(2900, 3);
         sleep(2000);
         myRobot.Dump();
         sleep(2000);
         myRobot.RetractDump();
         sleep(2000);
-        myRobot.MoveLift(10, 10);
+        myRobot.LowerLift(1, 3);
         sleep(2000);
-        //positive is going forward, negative is going back. might need to change powers. right is lighter than left side.
-        myRobot.Move(-20);
     }
     private void HighBucket (Robot myRobot){
         ///try this out. i think this is the plan that will score in high bucket.
@@ -31,13 +29,13 @@ public class AutonomousRun extends LinearOpMode {
         myRobot.Turn(-45);
         myRobot.Move(-20);
         myRobot.Turn(-90);
-        myRobot.MoveLift(2900, 10);
+        myRobot.ExtendLift(2900, 3);
         myRobot.Move(-10);
         myRobot.Dump();
         sleep(1000);
         myRobot.RetractDump();
         myRobot.Move(10);
-        myRobot.MoveLift(10,10);
+        myRobot.LowerLift(1,3);
 
         //step 2: furthest element from the wall on the ground score
         myRobot.Turn(-90);
@@ -53,13 +51,13 @@ public class AutonomousRun extends LinearOpMode {
         myRobot.Turn(90);
         myRobot.OpenClaw();
         sleep(1000);
-        myRobot.MoveLift(2900, 10);
+        myRobot.ExtendLift(2900, 3);
         myRobot.Move(-10);
         myRobot.Dump();
         sleep(1000);
         myRobot.RetractDump();
         myRobot.Move(10);
-        myRobot.MoveLift(10,10);
+        myRobot.LowerLift(1,3);
 
         //step 3: middle element on the ground score
         myRobot.Turn(-90);
@@ -75,13 +73,13 @@ public class AutonomousRun extends LinearOpMode {
         myRobot.Turn(90);
         myRobot.OpenClaw();
         sleep(1000);
-        myRobot.MoveLift(2900, 10);
+        myRobot.ExtendLift(2900, 3);
         myRobot.Move(-10);
         myRobot.Dump();
         sleep(1000);
         myRobot.RetractDump();
         myRobot.Move(10);
-        myRobot.MoveLift(10,10);
+        myRobot.LowerLift(1,3);
 
     }
     private void Specimen(Robot myRobot){
@@ -108,5 +106,6 @@ public class AutonomousRun extends LinearOpMode {
 
         waitForStart();
 
+        TestLandD(myRobot);
     }
 }
