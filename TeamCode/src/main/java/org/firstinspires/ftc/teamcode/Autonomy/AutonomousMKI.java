@@ -8,16 +8,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class AutonomousMKI extends LinearOpMode {
     HardwareRobot _robot = new HardwareRobot();
 
-    final double _driveSpeed = 0.05;
+    final double _driveSpeed = 0.1;
     final double _turnSpeed = 0.05;
-    final double _liftPower = 0.25;
+    final double _liftPower = 0.6;
 
     @Override
     public void runOpMode() {
         _robot.Init(hardwareMap);
 
         telemetry.addData("Initialization", "Started");
-        InitializeLiftPosition();
+//        InitializeLiftPosition();
+//        InitializeHingeAndClawsPosition();
+//        InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
         telemetry.addData("Front Left Drive", _robot.FrontLeftDrive.getCurrentPosition());
@@ -29,38 +31,32 @@ public class AutonomousMKI extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+        HighBucketTest();
+    }
 
-        MoveForwardBackWards(12, 6);
-        sleep(2000);
-        MoveForwardBackWards(-12, 6);
-        sleep(2000);
-
-        Turn(45, 6);
-        sleep(2000);
-        Turn(-45, 6);
-        sleep(2000);
-        SetLiftPosition(1500, 5);
-        sleep(2000);
+    private void HighBucketTest(){
+        MoveForwardBackWards(-2, 2);
+        SetLiftPosition(2900, 7);
         Dump();
         sleep(2000);
         RetractDump();
         sleep(2000);
-        SetLiftPosition(0, 5);
-        sleep(2000);
+        MoveForwardBackWards(2, 2);
+        SetLiftPosition(0, 7);
+        Turn(80, 7);
+        MoveForwardBackWards(1, 1);
+        sleep(100);
+        MoveForwardBackWards(8, 5);
+//        Turn(-5, 3);
         LowerHinge();
-        sleep(2000);
-        OpenClaw();
         sleep(2000);
         CloseClaw();
         sleep(2000);
         LiftHinge();
         sleep(2000);
-        OpenGripper();
+        OpenClaw();
         sleep(2000);
-        CloseGripper();
-
     }
-
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
             return;
@@ -127,15 +123,19 @@ public class AutonomousMKI extends LinearOpMode {
             return;
         }
 
-        double currPosition = _robot.LeftLiftMotor.getCurrentPosition();
-        double targetPosition = currPosition + newPosition;
+        double currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
+        double positionDifference = 2900 - newPosition;
+        double targetPosition = newPosition - positionDifference;
+
 
         // Set min/max limits for the lift.
-        if (targetPosition > 2900)
-        { targetPosition = 2900; }
+        if (targetPosition > 2900) {
+            targetPosition = 2900;
+        }
 
-        if (targetPosition < 0)
-        { targetPosition = 0; }
+        if (targetPosition < 0) {
+            targetPosition = 0;
+        }
 
         double startTime = getRuntime();
         double runTime;
@@ -145,14 +145,18 @@ public class AutonomousMKI extends LinearOpMode {
             _robot.RightLiftMotor.setPower(_liftPower);
 
             while (currPosition > targetPosition) {
-                currPosition = _robot.LeftLiftMotor.getCurrentPosition();
+                currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
                 runTime = getRuntime() - startTime;
 
-                if (runTime > timeOut) { break; }
+                if (runTime > timeOut) {
+                    break;
+                }
 
+                telemetry.addData("Lift Mode", "Retracting");
                 telemetry.addData("Elapse Time", runTime);
                 telemetry.addData("Time Out", timeOut);
                 telemetry.addData("Current Position", currPosition);
+                telemetry.addData("Target Position", targetPosition);
                 telemetry.update();
             }
         } else if (currPosition < targetPosition) {
@@ -160,14 +164,18 @@ public class AutonomousMKI extends LinearOpMode {
             _robot.RightLiftMotor.setPower(-_liftPower);
 
             while (currPosition < targetPosition) {
-                currPosition = _robot.LeftLiftMotor.getCurrentPosition();
+                currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
                 runTime = getRuntime() - startTime;
 
-                if (runTime > timeOut) { break; }
+                if (runTime > timeOut) {
+                    break;
+                }
 
+                telemetry.addData("Lift Mode", "Extending");
                 telemetry.addData("Elapse Time", runTime);
                 telemetry.addData("Time Out", timeOut);
                 telemetry.addData("Current Position", currPosition);
+                telemetry.addData("Target Position", targetPosition);
                 telemetry.update();
             }
         }
@@ -176,13 +184,13 @@ public class AutonomousMKI extends LinearOpMode {
             // If lift is extended more than halfway,
             // give the lift a tiny amount of power
             // to help hold the position.
-            _robot.LeftLiftMotor.setPower(0.005);
-            _robot.RightLiftMotor.setPower(0.005);
-        }
-        else {
+            _robot.LeftLiftMotor.setPower(0.01);
+            _robot.RightLiftMotor.setPower(0.01);
+        } else {
             _robot.LeftLiftMotor.setPower(0.0);
             _robot.RightLiftMotor.setPower(0.0);
         }
+
     }
 
     private void Turn(double degreeChange, double timeout) {
@@ -198,10 +206,10 @@ public class AutonomousMKI extends LinearOpMode {
         double runTime;
 
         if (degreeChange < 0) {
-            _robot.FrontLeftDrive.setPower(_turnSpeed);
-            _robot.FrontRightDrive.setPower(-_turnSpeed);
-            _robot.BackLeftDrive.setPower(_turnSpeed);
-            _robot.BackRightDrive.setPower(-_turnSpeed);
+            _robot.FrontLeftDrive.setPower(-_turnSpeed);
+            _robot.FrontRightDrive.setPower(_turnSpeed);
+            _robot.BackLeftDrive.setPower(-_turnSpeed);
+            _robot.BackRightDrive.setPower(_turnSpeed);
 
             while (currAngle > targetAngle) {
                 currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
@@ -214,10 +222,10 @@ public class AutonomousMKI extends LinearOpMode {
                 telemetry.update();
             }
         } else if (degreeChange > 0) {
-            _robot.FrontLeftDrive.setPower(-_turnSpeed);
-            _robot.FrontRightDrive.setPower(_turnSpeed);
-            _robot.BackLeftDrive.setPower(-_turnSpeed);
-            _robot.BackRightDrive.setPower(_turnSpeed);
+            _robot.FrontLeftDrive.setPower(_turnSpeed);
+            _robot.FrontRightDrive.setPower(-_turnSpeed);
+            _robot.BackLeftDrive.setPower(_turnSpeed);
+            _robot.BackRightDrive.setPower(-_turnSpeed);
 
             while (currAngle < targetAngle) {
                 currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
@@ -286,51 +294,21 @@ public class AutonomousMKI extends LinearOpMode {
     }
 
     private void OpenGripper() {
-        _robot.GripperServo.setPosition(0.15);
-
-        while (_robot.GripperServo.getPosition() != 0.15) {
-
-            telemetry.addData("Grip Rotation", _robot.GripperServo.getPosition());
-            telemetry.update();
-        }
+        _robot.GripperServo.setPosition(0.6);
     }
 
     private void CloseGripper() {
         _robot.GripperServo.setPosition(0.8);
-
-        while (_robot.GripperServo.getPosition() != 0.8) {
-
-            telemetry.addData("Grip Rotation", _robot.GripperServo.getPosition());
-            telemetry.update();
-        }
     }
 
     private void LiftHinge() {
-        double currentHingePosition = _robot.LeftHingeServo.getPosition();
-
         _robot.LeftHingeServo.setPosition(1.0);
         _robot.RightHingeServo.setPosition(0.25);
-
-        while (currentHingePosition != 1.0) {
-            currentHingePosition = _robot.LeftHingeServo.getPosition();
-
-            telemetry.addData("Hinge Rotation", currentHingePosition);
-            telemetry.update();
-        }
     }
 
     private void LowerHinge() {
-        double currentHingePosition = _robot.LeftHingeServo.getPosition();
-
         _robot.LeftHingeServo.setPosition(0.675);
         _robot.RightHingeServo.setPosition(0.575);
-
-        while (currentHingePosition != 0.675) {
-            currentHingePosition = _robot.LeftHingeServo.getPosition();
-
-            telemetry.addData("Hinge Rotation", currentHingePosition);
-            telemetry.update();
-        }
     }
 
     private  int ConvertInchesToTicks(double inches) {
@@ -359,5 +337,28 @@ public class AutonomousMKI extends LinearOpMode {
 
         _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void InitializeHingeAndClawsPosition(){
+        LiftHinge();
+        OpenClaw();
+        sleep(1000);
+        CloseClaw();
+        sleep(1000);
+        OpenClaw();
+        sleep(1000);
+        CloseClaw();
+        sleep(1000);
+    }
+
+    private void InitializeGripper(){
+        OpenGripper();
+        sleep(1000);
+        CloseGripper();
+        sleep(1000);
+        OpenGripper();
+        sleep(1000);
+        CloseGripper();
+        sleep(1000);
     }
 }
