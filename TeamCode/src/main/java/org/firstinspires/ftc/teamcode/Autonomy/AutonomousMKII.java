@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous (name = "Rei Auto Run MKI", group = "Rei")
-public class AutonomousMKI extends LinearOpMode {
+@Autonomous (name = "Rei Auto Run MKII", group = "Rei")
+public class AutonomousMKII extends LinearOpMode {
     HardwareRobot _robot = new HardwareRobot();
 
     final double _driveSpeed = 0.1;
@@ -190,7 +190,48 @@ public class AutonomousMKI extends LinearOpMode {
             _robot.LeftLiftMotor.setPower(0.0);
             _robot.RightLiftMotor.setPower(0.0);
         }
+    }
 
+    private void Turn2(double degreeChange, double timeOut) {
+        if (!opModeIsActive()) {
+            return;
+        }
+
+        double currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
+        double angleDifference = 180 - degreeChange;
+        double targetAngle = degreeChange - angleDifference;
+
+        double startTime = getRuntime();
+        double runTime;
+
+        if (currAngle > targetAngle) {
+            _robot.FrontLeftDrive.setPower(-_turnSpeed);
+            _robot.FrontRightDrive.setPower(_turnSpeed);
+            _robot.BackLeftDrive.setPower(-_turnSpeed);
+            _robot.BackRightDrive.setPower(_turnSpeed);
+        }
+
+        if (currAngle < targetAngle) {
+            _robot.FrontLeftDrive.setPower(_turnSpeed);
+            _robot.FrontRightDrive.setPower(-_turnSpeed);
+            _robot.BackLeftDrive.setPower(_turnSpeed);
+            _robot.BackRightDrive.setPower(-_turnSpeed);
+        }
+        while (currAngle < targetAngle) {
+            currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
+            runTime = getRuntime() - startTime;
+
+            if (runTime > timeOut) { break; }
+
+            telemetry.addData("Angle", currAngle);
+            telemetry.addData("Target Angle", degreeChange);
+            telemetry.update();
+        }
+        
+        _robot.FrontLeftDrive.setPower(0.0);
+        _robot.FrontRightDrive.setPower(0.0);
+        _robot.BackLeftDrive.setPower(0.0);
+        _robot.BackRightDrive.setPower(0.0);
     }
 
     private void Turn(double degreeChange, double timeout) {
@@ -293,14 +334,11 @@ public class AutonomousMKI extends LinearOpMode {
         }
     }
 
-    private void OpenGripper() {
-        _robot.GripperServo.setPosition(0.6);
-        sleep(250);
-    }
+    private void OpenGripper() {_robot.GripperServo.setPosition(0.6);}
 
     private void CloseGripper() {
+
         _robot.GripperServo.setPosition(0.8);
-        sleep(250);
     }
 
     private void LiftHinge() {
@@ -313,14 +351,13 @@ public class AutonomousMKI extends LinearOpMode {
         _robot.RightHingeServo.setPosition(0.575);
     }
 
-    private int ConvertInchesToTicks(double inches) {
+    private  int ConvertInchesToTicks(double inches) {
         int encoderTicksPerRotation = 2000;
-        double encoderDiameter = 1.82;
-
+        double encoderDiameter = 1.83 / 2.54;
         double circumference = encoderDiameter * Math.PI;
-        double rotations = 1 / circumference;
-        int ticks = (int)Math.floor(rotations * inches * encoderTicksPerRotation);
-        return  ticks;
+        double rotations = circumference * encoderTicksPerRotation;
+
+        return (int)Math.floor(rotations * inches * encoderTicksPerRotation);
     }
 
     private void InitializeLiftPosition() {
