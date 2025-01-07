@@ -31,31 +31,75 @@ public class AutonomousMKI extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        HighBucketTest();
+        Test2();
     }
 
     private void HighBucketTest(){
         MoveForwardBackWards(-2, 2);
         SetLiftPosition(2900, 7);
         Dump();
-        sleep(2000);
+        sleep(1000);
         RetractDump();
-        sleep(2000);
+        sleep(1000);
         MoveForwardBackWards(2, 2);
         SetLiftPosition(0, 7);
-        Turn(80, 7);
+        Turn(-80, 3);
+        sleep(100);
         MoveForwardBackWards(1, 1);
         sleep(100);
         MoveForwardBackWards(8, 5);
-//        Turn(-5, 3);
         LowerHinge();
-        sleep(2000);
+        sleep(1000);
         CloseClaw();
-        sleep(2000);
+        sleep(1000);
         LiftHinge();
-        sleep(2000);
+        sleep(1000);
         OpenClaw();
-        sleep(2000);
+        sleep(1000);
+        Turn(44,3);
+        sleep(1000);
+        MoveForwardBackWards(-4, 2);
+        sleep(1000);
+        SetLiftPosition(2900, 7);
+        Dump();
+        sleep(1000);
+        RetractDump();
+        sleep(10000);
+        MoveForwardBackWards(2, 2);
+        SetLiftPosition(0, 7);
+    }
+
+    private void Test2(){
+        MoveForwardBackWards(-2, 2);
+        SetLiftPosition(2900, 7);
+        Dump();
+        sleep(1000);
+        RetractDump();
+        sleep(1000);
+        MoveForwardBackWards(2, 2);
+        SetLiftPosition(0, 7);
+        Turn(-78, 3);
+        sleep(1000);
+        MoveForwardBackWards(10, 5);
+        LowerHinge();
+        sleep(1000);
+        CloseClaw();
+        sleep(1000);
+        LiftHinge();
+        sleep(1000);
+        OpenClaw();
+        sleep(1000);
+        Turn(53, 3);
+        sleep(1000);
+        MoveForwardBackWards(-3, 2);
+        SetLiftPosition(2900, 7);
+        Dump();
+        sleep(1000);
+        RetractDump();
+        sleep(1000);
+        MoveForwardBackWards(2, 2);
+        SetLiftPosition(0, 7);
+        sleep(10000);
     }
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
@@ -89,6 +133,7 @@ public class AutonomousMKI extends LinearOpMode {
                 telemetry.addData("Elapse Time", runTime);
                 telemetry.addData("Distance travelled", currentPosition);
                 telemetry.addData("Target Position", targetPosition);
+                telemetry.addData("Move Ticks", moveTicks);
                 telemetry.update();
             }
         } else if (moveInches > 0) {
@@ -108,6 +153,7 @@ public class AutonomousMKI extends LinearOpMode {
                 telemetry.addData("Elapse Time", runTime);
                 telemetry.addData("Distance travelled", currentPosition);
                 telemetry.addData("Target Position", targetPosition);
+                telemetry.addData("Move Ticks", moveTicks);
                 telemetry.update();
             }
         }
@@ -193,7 +239,7 @@ public class AutonomousMKI extends LinearOpMode {
 
     }
 
-    private void Turn(double degreeChange, double timeout) {
+    private void Turn(double targetAngle, double timeout) {
         if (!opModeIsActive()) {
             return;
         }
@@ -201,11 +247,11 @@ public class AutonomousMKI extends LinearOpMode {
         _robot.TurnGyro.resetYaw();
 
         double currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
-        double targetAngle = currAngle + degreeChange;
         double startTime = getRuntime();
         double runTime;
+        targetAngle = targetAngle * -1;
 
-        if (degreeChange < 0) {
+        if (targetAngle < 0) {
             _robot.FrontLeftDrive.setPower(-_turnSpeed);
             _robot.FrontRightDrive.setPower(_turnSpeed);
             _robot.BackLeftDrive.setPower(-_turnSpeed);
@@ -218,10 +264,10 @@ public class AutonomousMKI extends LinearOpMode {
                 if (runTime > timeout) { break; }
 
                 telemetry.addData("Angle", currAngle);
-                telemetry.addData("Target Angle", degreeChange);
+                telemetry.addData("Target Angle", targetAngle);
                 telemetry.update();
             }
-        } else if (degreeChange > 0) {
+        } else if (targetAngle > 0) {
             _robot.FrontLeftDrive.setPower(_turnSpeed);
             _robot.FrontRightDrive.setPower(-_turnSpeed);
             _robot.BackLeftDrive.setPower(_turnSpeed);
@@ -234,7 +280,7 @@ public class AutonomousMKI extends LinearOpMode {
                 if (runTime > timeout) { break; }
 
                 telemetry.addData("Angle", currAngle);
-                telemetry.addData("Target Angle", degreeChange);
+                telemetry.addData("Target Angle", targetAngle);
                 telemetry.update();
             }
         }

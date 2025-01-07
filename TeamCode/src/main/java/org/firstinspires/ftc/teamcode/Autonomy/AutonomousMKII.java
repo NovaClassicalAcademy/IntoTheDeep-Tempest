@@ -10,7 +10,8 @@ public class AutonomousMKII extends LinearOpMode {
 
     final double _driveSpeed = 0.1;
     final double _turnSpeed = 0.05;
-    final double _liftPower = 0.6;
+    final double _liftSpeed = 0.9;
+    final int _sleepTime = 100;
 
     @Override
     public void runOpMode() {
@@ -31,7 +32,7 @@ public class AutonomousMKII extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        HighBucketTest();
+        Test2();
     }
 
     private void HighBucketTest(){
@@ -57,6 +58,22 @@ public class AutonomousMKII extends LinearOpMode {
         OpenClaw();
         sleep(2000);
     }
+
+    private void Test2(){
+        MoveForwardBackWards(-2, 2);
+        SetLiftPosition(2900, 7);
+        Dump();
+        RetractDump();
+        MoveForwardBackWards(2, 2);
+        SetLiftPosition(0, 7);
+        Turn(80, 7);
+        MoveForwardBackWards(1, 1);
+        MoveForwardBackWards(8, 5);
+        LowerHinge();
+        CloseClaw();
+        LiftHinge();
+        OpenClaw();
+    }
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
             return;
@@ -73,10 +90,7 @@ public class AutonomousMKII extends LinearOpMode {
         double runTime;
 
         if (moveInches < 0) {
-            _robot.FrontLeftDrive.setPower(_driveSpeed);
-            _robot.FrontRightDrive.setPower(_driveSpeed);
-            _robot.BackLeftDrive.setPower(_driveSpeed);
-            _robot.BackRightDrive.setPower(_driveSpeed);
+           DriveForward();
 
             while (currentPosition > targetPosition) {
 
@@ -89,13 +103,11 @@ public class AutonomousMKII extends LinearOpMode {
                 telemetry.addData("Elapse Time", runTime);
                 telemetry.addData("Distance travelled", currentPosition);
                 telemetry.addData("Target Position", targetPosition);
+                telemetry.addData("Move Ticks", moveTicks);
                 telemetry.update();
             }
         } else if (moveInches > 0) {
-            _robot.FrontLeftDrive.setPower(-_driveSpeed);
-            _robot.FrontRightDrive.setPower(-_driveSpeed);
-            _robot.BackLeftDrive.setPower(-_driveSpeed);
-            _robot.BackRightDrive.setPower(-_driveSpeed);
+            DriveBackward();
 
             while (currentPosition < targetPosition) {
 
@@ -108,14 +120,12 @@ public class AutonomousMKII extends LinearOpMode {
                 telemetry.addData("Elapse Time", runTime);
                 telemetry.addData("Distance travelled", currentPosition);
                 telemetry.addData("Target Position", targetPosition);
+                telemetry.addData("Move Ticks", moveTicks);
                 telemetry.update();
             }
         }
 
-        _robot.FrontLeftDrive.setPower(0.0);
-        _robot.FrontRightDrive.setPower(0.0);
-        _robot.BackLeftDrive.setPower(0.0);
-        _robot.BackRightDrive.setPower(0.0);
+        DriveOff();
     }
 
     private void SetLiftPosition(double newPosition, double timeOut) {
@@ -141,8 +151,8 @@ public class AutonomousMKII extends LinearOpMode {
         double runTime;
 
         if (currPosition > targetPosition) {
-            _robot.LeftLiftMotor.setPower(_liftPower);
-            _robot.RightLiftMotor.setPower(_liftPower);
+            _robot.LeftLiftMotor.setPower(_liftSpeed);
+            _robot.RightLiftMotor.setPower(_liftSpeed);
 
             while (currPosition > targetPosition) {
                 currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
@@ -160,8 +170,8 @@ public class AutonomousMKII extends LinearOpMode {
                 telemetry.update();
             }
         } else if (currPosition < targetPosition) {
-            _robot.LeftLiftMotor.setPower(-_liftPower);
-            _robot.RightLiftMotor.setPower(-_liftPower);
+            _robot.LeftLiftMotor.setPower(-_liftSpeed);
+            _robot.RightLiftMotor.setPower(-_liftSpeed);
 
             while (currPosition < targetPosition) {
                 currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
@@ -192,49 +202,7 @@ public class AutonomousMKII extends LinearOpMode {
         }
     }
 
-    private void Turn2(double degreeChange, double timeOut) {
-        if (!opModeIsActive()) {
-            return;
-        }
-
-        double currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
-        double angleDifference = 180 - degreeChange;
-        double targetAngle = degreeChange - angleDifference;
-
-        double startTime = getRuntime();
-        double runTime;
-
-        if (currAngle > targetAngle) {
-            _robot.FrontLeftDrive.setPower(-_turnSpeed);
-            _robot.FrontRightDrive.setPower(_turnSpeed);
-            _robot.BackLeftDrive.setPower(-_turnSpeed);
-            _robot.BackRightDrive.setPower(_turnSpeed);
-        }
-
-        if (currAngle < targetAngle) {
-            _robot.FrontLeftDrive.setPower(_turnSpeed);
-            _robot.FrontRightDrive.setPower(-_turnSpeed);
-            _robot.BackLeftDrive.setPower(_turnSpeed);
-            _robot.BackRightDrive.setPower(-_turnSpeed);
-        }
-        while (currAngle < targetAngle) {
-            currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
-            runTime = getRuntime() - startTime;
-
-            if (runTime > timeOut) { break; }
-
-            telemetry.addData("Angle", currAngle);
-            telemetry.addData("Target Angle", degreeChange);
-            telemetry.update();
-        }
-        
-        _robot.FrontLeftDrive.setPower(0.0);
-        _robot.FrontRightDrive.setPower(0.0);
-        _robot.BackLeftDrive.setPower(0.0);
-        _robot.BackRightDrive.setPower(0.0);
-    }
-
-    private void Turn(double degreeChange, double timeout) {
+    private void Turn(double targetAngle, double timeout) {
         if (!opModeIsActive()) {
             return;
         }
@@ -242,122 +210,88 @@ public class AutonomousMKII extends LinearOpMode {
         _robot.TurnGyro.resetYaw();
 
         double currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
-        double targetAngle = currAngle + degreeChange;
+        double degreeTolerance = 1;
+        double degreeDifference = targetAngle - currAngle;
         double startTime = getRuntime();
         double runTime;
+        targetAngle = targetAngle * -1;
 
-        if (degreeChange < 0) {
-            _robot.FrontLeftDrive.setPower(-_turnSpeed);
-            _robot.FrontRightDrive.setPower(_turnSpeed);
-            _robot.BackLeftDrive.setPower(-_turnSpeed);
-            _robot.BackRightDrive.setPower(_turnSpeed);
-
-            while (currAngle > targetAngle) {
-                currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
-                runTime = getRuntime() - startTime;
-
-                if (runTime > timeout) { break; }
-
-                telemetry.addData("Angle", currAngle);
-                telemetry.addData("Target Angle", degreeChange);
-                telemetry.update();
+        while (degreeDifference > degreeTolerance) {
+            if (currAngle > targetAngle) {
+                DriveTurnLeft();
+            } else {
+                DriveTurnRight();
             }
-        } else if (degreeChange > 0) {
-            _robot.FrontLeftDrive.setPower(_turnSpeed);
-            _robot.FrontRightDrive.setPower(-_turnSpeed);
-            _robot.BackLeftDrive.setPower(_turnSpeed);
-            _robot.BackRightDrive.setPower(-_turnSpeed);
 
-            while (currAngle < targetAngle) {
-                currAngle = _robot.TurnGyro.getRobotYawPitchRollAngles().getYaw();
-                runTime = getRuntime() - startTime;
+            runTime = getRuntime() - startTime;
+            degreeDifference = targetAngle - currAngle;
 
-                if (runTime > timeout) { break; }
+            telemetry.addData("Angle", currAngle);
+            telemetry.addData("Target Angle", targetAngle);
+            telemetry.addData("Degree Difference", degreeDifference);
+            telemetry.update();
 
-                telemetry.addData("Angle", currAngle);
-                telemetry.addData("Target Angle", degreeChange);
-                telemetry.update();
+            if (runTime > timeout){
+                break;
             }
         }
 
-        _robot.FrontLeftDrive.setPower(0.0);
-        _robot.FrontRightDrive.setPower(0.0);
-        _robot.BackLeftDrive.setPower(0.0);
-        _robot.BackRightDrive.setPower(0.0);
+        DriveOff();
+
+        sleep(_sleepTime);
     }
 
     private void Dump() {
-        double endPosition = 0.25;
-
-        _robot.DumpBucketServo.setPosition(endPosition);
-
-        while (_robot.DumpBucketServo.getPosition() != endPosition) {
-
-            telemetry.addData("Dump Rotation", _robot.DumpBucketServo.getPosition());
-            telemetry.update();
-        }
+        _robot.DumpBucketServo.setPosition(0.25);
+        sleep(_sleepTime);
     }
 
     private void RetractDump() {
-        double endPosition = 1;
-
-        _robot.DumpBucketServo.setPosition(endPosition);
-
-        while (_robot.DumpBucketServo.getPosition() != endPosition) {
-
-            telemetry.addData("Dump Rotation", _robot.DumpBucketServo.getPosition());
-            telemetry.update();
-        }
+        _robot.DumpBucketServo.setPosition(1);
+        sleep(_sleepTime);
     }
 
     private void OpenClaw() {
         _robot.LeftClawServo.setPosition(0.0);
         _robot.RightClawServo.setPosition(1.0);
-
-        while (_robot.LeftClawServo.getPosition() != 0.0 && _robot.RightClawServo.getPosition() != 1.0) {
-
-            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
-            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
-            telemetry.update();
-        }
+        sleep(_sleepTime);
     }
 
     private void CloseClaw() {
         _robot.LeftClawServo.setPosition(0.44);
         _robot.RightClawServo.setPosition(0.56);
-
-        while (_robot.LeftClawServo.getPosition() != 0.44 && _robot.RightClawServo.getPosition() != 0.56) {
-
-            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
-            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
-            telemetry.update();
-        }
+        sleep(_sleepTime);
     }
 
-    private void OpenGripper() {_robot.GripperServo.setPosition(0.6);}
+    private void OpenGripper() {
+        _robot.GripperServo.setPosition(0.6);
+        sleep(_sleepTime);
+    }
 
     private void CloseGripper() {
-
         _robot.GripperServo.setPosition(0.8);
+        sleep(_sleepTime);
     }
 
     private void LiftHinge() {
         _robot.LeftHingeServo.setPosition(1.0);
         _robot.RightHingeServo.setPosition(0.25);
+        sleep(_sleepTime);
     }
 
     private void LowerHinge() {
         _robot.LeftHingeServo.setPosition(0.675);
         _robot.RightHingeServo.setPosition(0.575);
+        sleep(_sleepTime);
     }
 
     private  int ConvertInchesToTicks(double inches) {
         int encoderTicksPerRotation = 2000;
-        double encoderDiameter = 1.83 / 2.54;
+        double encoderDiameter = 1.83 / 2.54; //converting cm to inches
         double circumference = encoderDiameter * Math.PI;
-        double rotations = circumference * encoderTicksPerRotation;
+        double inchesPerTick = circumference / encoderTicksPerRotation;
 
-        return (int)Math.floor(rotations * inches * encoderTicksPerRotation);
+        return (int) Math.floor(inches / inchesPerTick);
     }
 
     private void InitializeLiftPosition() {
@@ -378,6 +312,40 @@ public class AutonomousMKII extends LinearOpMode {
         _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    private void DriveForward(){
+        _robot.FrontLeftDrive.setPower(-_driveSpeed);
+        _robot.FrontRightDrive.setPower(-_driveSpeed);
+        _robot.BackLeftDrive.setPower(-_driveSpeed);
+        _robot.BackRightDrive.setPower(-_driveSpeed);
+    }
+
+    private void DriveBackward(){
+        _robot.FrontLeftDrive.setPower(_driveSpeed);
+        _robot.FrontRightDrive.setPower(_driveSpeed);
+        _robot.BackLeftDrive.setPower(_driveSpeed);
+        _robot.BackRightDrive.setPower(_driveSpeed);
+    }
+
+    private void DriveTurnLeft(){
+        _robot.FrontLeftDrive.setPower(-_turnSpeed);
+        _robot.FrontRightDrive.setPower(_turnSpeed);
+        _robot.BackLeftDrive.setPower(-_turnSpeed);
+        _robot.BackRightDrive.setPower(_turnSpeed);
+    }
+
+    private void DriveTurnRight(){
+        _robot.FrontLeftDrive.setPower(_turnSpeed);
+        _robot.FrontRightDrive.setPower(-_turnSpeed);
+        _robot.BackLeftDrive.setPower(_turnSpeed);
+        _robot.BackRightDrive.setPower(-_turnSpeed);
+    }
+
+    private void DriveOff(){
+        _robot.FrontLeftDrive.setPower(0.0);
+        _robot.FrontRightDrive.setPower(0.0);
+        _robot.BackLeftDrive.setPower(0.0);
+        _robot.BackRightDrive.setPower(0.0);
+    }
     private void InitializeHingeAndClawsPosition(){
         LiftHinge();
         OpenClaw();
