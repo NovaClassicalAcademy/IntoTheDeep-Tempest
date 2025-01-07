@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous (name = "Rei Auto Run MKI", group = "Rei")
-public class AutonomousMKI extends LinearOpMode {
+@Autonomous (name = "Rei Auto Run MKIII", group = "Rei")
+public class AutonomousMKIII extends LinearOpMode {
     HardwareRobot _robot = new HardwareRobot();
 
     final double _driveSpeed = 0.2;
-    final double _turnSpeed = 0.05;
+    final double _turnSpeed = 0.08;
     final double _liftPower = 2.5;
 
     @Override
@@ -31,9 +31,10 @@ public class AutonomousMKI extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        HighBucketRun();
+        Test3();
     }
-    private void HighBucketRun() {
+
+    private void Test3() {
         MoveForwardBackWards(-2, 2);
         SetLiftPosition(2900, 7);
         Dump();
