@@ -10,16 +10,16 @@ public class AutonomousMKI extends LinearOpMode {
 
     final double _driveSpeed = 0.2;
     final double _turnSpeed = 0.05;
-    final double _liftPower = 2.5;
+    final double _liftPower = 3.0;
 
     @Override
     public void runOpMode() {
         _robot.Init(hardwareMap);
 
         telemetry.addData("Initialization", "Started");
-//        InitializeLiftPosition();
-//        InitializeHingeAndClawsPosition();
-//        InitializeGripper();
+        InitializeLiftPosition();
+        InitializeHingeAndClawsPosition();
+        InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
         telemetry.addData("Front Left Drive", _robot.FrontLeftDrive.getCurrentPosition());
@@ -68,13 +68,14 @@ public class AutonomousMKI extends LinearOpMode {
         sleep(1000);
         LowerHinge();
         sleep(1000);
-        MoveForwardBackWards(1, 1);
+        MoveForwardBackWards(2, 1);
         CloseClaw();
         sleep(1000);
         LiftHinge();
         sleep(1000);
         OpenClaw();
         sleep(1000);
+
     }
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
@@ -369,8 +370,6 @@ public class AutonomousMKI extends LinearOpMode {
         CloseClaw();
         sleep(1000);
         OpenClaw();
-        sleep(1000);
-        CloseClaw();
         sleep(1000);
     }
 

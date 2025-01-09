@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class AutonomousMKII extends LinearOpMode {
     HardwareRobot _robot = new HardwareRobot();
 
-    final double _driveSpeed = 0.1;
-    final double _turnSpeed = 0.05;
-    final double _liftSpeed = 0.9;
+    final double _driveSpeed = 0.3;
+    final double _turnSpeed = 0.08;
+    final double _liftPower = 5.0;
     final int _sleepTime = 100;
 
     @Override
@@ -18,9 +18,9 @@ public class AutonomousMKII extends LinearOpMode {
         _robot.Init(hardwareMap);
 
         telemetry.addData("Initialization", "Started");
-//        InitializeLiftPosition();
-//        InitializeHingeAndClawsPosition();
-//        InitializeGripper();
+        InitializeLiftPosition();
+        InitializeHingeAndClawsPosition();
+        InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
         telemetry.addData("Front Left Drive", _robot.FrontLeftDrive.getCurrentPosition());
@@ -32,48 +32,53 @@ public class AutonomousMKII extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        Test2();
+        Test();
     }
 
-    private void HighBucketTest(){
+    private void Test() {
         MoveForwardBackWards(-2, 2);
         SetLiftPosition(2900, 7);
         Dump();
-        sleep(2000);
+        sleep(1000);
         RetractDump();
-        sleep(2000);
+        sleep(1000);
         MoveForwardBackWards(2, 2);
         SetLiftPosition(0, 7);
-        Turn(80, 7);
-        MoveForwardBackWards(1, 1);
-        sleep(100);
-        MoveForwardBackWards(8, 5);
-//        Turn(-5, 3);
+        Turn(-76, 3);
+        sleep(1000);
+        MoveForwardBackWards(5, 5);
         LowerHinge();
-        sleep(2000);
+        sleep(1000);
+        MoveForwardBackWards(2, 5);
         CloseClaw();
-        sleep(2000);
+        sleep(1000);
         LiftHinge();
-        sleep(2000);
+        sleep(1000);
         OpenClaw();
-        sleep(2000);
-    }
-
-    private void Test2(){
-        MoveForwardBackWards(-2, 2);
+        sleep(1000);
+        Turn(51, 3);
+        sleep(1000);
+        MoveForwardBackWards(-4, 2);
         SetLiftPosition(2900, 7);
         Dump();
+        sleep(1000);
         RetractDump();
+        sleep(1000);
         MoveForwardBackWards(2, 2);
         SetLiftPosition(0, 7);
-        Turn(80, 7);
-        MoveForwardBackWards(1, 1);
-        MoveForwardBackWards(8, 5);
+        Turn(-68, 3);
+        sleep(1000);
         LowerHinge();
+        sleep(1000);
+        MoveForwardBackWards(1, 1);
         CloseClaw();
+        sleep(1000);
         LiftHinge();
+        sleep(1000);
         OpenClaw();
+        sleep(1000);
     }
+
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
             return;
@@ -151,8 +156,8 @@ public class AutonomousMKII extends LinearOpMode {
         double runTime;
 
         if (currPosition > targetPosition) {
-            _robot.LeftLiftMotor.setPower(_liftSpeed);
-            _robot.RightLiftMotor.setPower(_liftSpeed);
+            _robot.LeftLiftMotor.setPower(_liftPower);
+            _robot.RightLiftMotor.setPower(_liftPower);
 
             while (currPosition > targetPosition) {
                 currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
@@ -170,8 +175,8 @@ public class AutonomousMKII extends LinearOpMode {
                 telemetry.update();
             }
         } else if (currPosition < targetPosition) {
-            _robot.LeftLiftMotor.setPower(-_liftSpeed);
-            _robot.RightLiftMotor.setPower(-_liftSpeed);
+            _robot.LeftLiftMotor.setPower(-_liftPower);
+            _robot.RightLiftMotor.setPower(-_liftPower);
 
             while (currPosition < targetPosition) {
                 currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
@@ -353,8 +358,6 @@ public class AutonomousMKII extends LinearOpMode {
         CloseClaw();
         sleep(1000);
         OpenClaw();
-        sleep(1000);
-        CloseClaw();
         sleep(1000);
     }
 

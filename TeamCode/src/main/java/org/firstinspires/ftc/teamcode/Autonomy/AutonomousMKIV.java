@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous (name = "Rei Auto Run MKIII", group = "Rei")
-public class AutonomousMKIII extends LinearOpMode {
+public class AutonomousMKIV extends LinearOpMode {
     HardwareRobot _robot = new HardwareRobot();
 
     final double _driveSpeed = 0.3;
@@ -35,47 +35,49 @@ public class AutonomousMKIII extends LinearOpMode {
     }
 
     private void Test3() {
+
+        long servoWaitTime = 500;
+
         MoveForwardBackWards(-2, 2);
         SetLiftPosition(2900, 7);
         Dump();
-        sleep(1000);
+        sleep(servoWaitTime);
         RetractDump();
-        sleep(1000);
+        sleep(servoWaitTime);
         MoveForwardBackWards(2, 2);
-        SetLiftPosition(0, 7);
+        RetractLiftPositionAsync(10);
         Turn(-76, 3);
-        sleep(1000);
+        sleep(servoWaitTime);
         MoveForwardBackWards(5, 5);
         LowerHinge();
-        sleep(1000);
+        sleep(servoWaitTime);
         MoveForwardBackWards(2, 5);
         CloseClaw();
-        sleep(1000);
+        sleep(servoWaitTime);
         LiftHinge();
-        sleep(1000);
+        sleep(servoWaitTime);
         OpenClaw();
-        sleep(1000);
+        sleep(servoWaitTime);
         Turn(51, 3);
-        sleep(1000);
+        sleep(servoWaitTime);
         MoveForwardBackWards(-4, 2);
         SetLiftPosition(2900, 7);
         Dump();
-        sleep(1000);
+        sleep(servoWaitTime);
         RetractDump();
-        sleep(1000);
+        sleep(servoWaitTime);
         MoveForwardBackWards(2, 2);
-        SetLiftPosition(0, 7);
+        RetractLiftPositionAsync(10);
         Turn(-68, 3);
-        sleep(1000);
+        sleep(servoWaitTime);
         LowerHinge();
-        sleep(1000);
+        sleep(servoWaitTime);
         MoveForwardBackWards(1, 1);
         CloseClaw();
-        sleep(1000);
+        sleep(servoWaitTime);
         LiftHinge();
-        sleep(1000);
+        sleep(servoWaitTime);
         OpenClaw();
-        sleep(1000);
     }
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
@@ -140,10 +142,27 @@ public class AutonomousMKIII extends LinearOpMode {
         _robot.BackRightDrive.setPower(0.0);
     }
 
+    private void RetractLiftPositionAsync(int newPosition){
+        if (!opModeIsActive()){
+            return;
+        }
+
+        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        _robot.RightLiftMotor.setTargetPosition(newPosition);
+        _robot.LeftLiftMotor.setTargetPosition(newPosition);
+
+        _robot.RightLiftMotor.setPower(_liftPower);
+        _robot.LeftLiftMotor.setPower(_liftPower);
+    }
     private void SetLiftPosition(double newPosition, double timeOut) {
         if (!opModeIsActive()) {
             return;
         }
+
+        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         double currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
         double positionDifference = 2900 - newPosition;
@@ -370,6 +389,7 @@ public class AutonomousMKIII extends LinearOpMode {
         CloseClaw();
         sleep(1000);
         OpenClaw();
+        sleep(1000);
     }
 
     private void InitializeGripper(){
