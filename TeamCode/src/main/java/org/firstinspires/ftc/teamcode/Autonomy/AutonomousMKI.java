@@ -17,9 +17,9 @@ public class AutonomousMKI extends LinearOpMode {
         _robot.Init(hardwareMap);
 
         telemetry.addData("Initialization", "Started");
-        InitializeLiftPosition();
-        InitializeHingeAndClawsPosition();
-        InitializeGripper();
+//        InitializeLiftPosition();
+//        InitializeHingeAndClawsPosition();
+//        InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
         telemetry.addData("Front Left Drive", _robot.FrontLeftDrive.getCurrentPosition());
@@ -31,7 +31,12 @@ public class AutonomousMKI extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        HighBucketRun();
+//        HighBucketRun();
+        Park();
+    }
+
+    private void Park() {
+        MoveForwardBackWards(-5, 3);
     }
     private void HighBucketRun() {
         MoveForwardBackWards(-2, 2);
@@ -62,13 +67,13 @@ public class AutonomousMKI extends LinearOpMode {
         sleep(1000);
         RetractDump();
         sleep(1000);
-        MoveForwardBackWards(2, 2);
+        MoveForwardBackWards(3, 2);
         SetLiftPosition(0, 7);
-        Turn(-68, 3);
+        Turn(-68, 4);
         sleep(1000);
         LowerHinge();
         sleep(1000);
-        MoveForwardBackWards(2, 1);
+        MoveForwardBackWards(3, 1);
         CloseClaw();
         sleep(1000);
         LiftHinge();

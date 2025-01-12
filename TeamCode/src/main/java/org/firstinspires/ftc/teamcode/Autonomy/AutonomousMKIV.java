@@ -31,7 +31,8 @@ public class AutonomousMKIV extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        Test3();
+//        Test3();
+        TestAsync();
     }
 
     private void Test3() {
@@ -45,7 +46,7 @@ public class AutonomousMKIV extends LinearOpMode {
         RetractDump();
         sleep(servoWaitTime);
         MoveForwardBackWards(2, 2);
-        RetractLiftPositionAsync(10);
+        RetractLiftPositionAsync(10, 2);
         Turn(-76, 3);
         sleep(servoWaitTime);
         MoveForwardBackWards(5, 5);
@@ -67,7 +68,7 @@ public class AutonomousMKIV extends LinearOpMode {
         RetractDump();
         sleep(servoWaitTime);
         MoveForwardBackWards(2, 2);
-        RetractLiftPositionAsync(10);
+        RetractLiftPositionAsync(10, 2);
         Turn(-68, 3);
         sleep(servoWaitTime);
         LowerHinge();
@@ -78,6 +79,11 @@ public class AutonomousMKIV extends LinearOpMode {
         LiftHinge();
         sleep(servoWaitTime);
         OpenClaw();
+    }
+
+    private void TestAsync(){
+        SetLiftPosition(2900, 7);
+        RetractLiftPositionAsync(0, 2);
     }
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
@@ -142,19 +148,57 @@ public class AutonomousMKIV extends LinearOpMode {
         _robot.BackRightDrive.setPower(0.0);
     }
 
-    private void RetractLiftPositionAsync(int newPosition){
-        if (!opModeIsActive()){
+    private void RetractLiftPositionAsync(int newLiftPosition, int movePosition) {
+        if (!opModeIsActive()) {
             return;
         }
 
-        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        _robot.RightLiftMotor.setTargetPosition(newPosition);
-        _robot.LeftLiftMotor.setTargetPosition(newPosition);
+        _robot.LeftLiftMotor.setTargetPosition(newLiftPosition);
+        _robot.RightLiftMotor.setTargetPosition(newLiftPosition);
 
-        _robot.RightLiftMotor.setPower(_liftPower);
-        _robot.LeftLiftMotor.setPower(_liftPower);
+        double currLiftPosition = _robot.LeftLiftMotor.getCurrentPosition();
+
+        if (newLiftPosition < currLiftPosition){
+
+            _robot.LeftLiftMotor.setPower(-_liftPower);
+            _robot.RightLiftMotor.setPower(-_liftPower);
+        }
+
+        telemetry.addData("Current Lift Position", _robot.RightLiftMotor.getCurrentPosition());
+        telemetry.addData("Target Lift Position", newLiftPosition);
+        telemetry.update();
+
+        while (_robot.LeftLiftMotor.isBusy() && _robot.RightLiftMotor.isBusy()) {
+
+            _robot.FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            _robot.FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            _robot.BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            _robot.BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            _robot.FrontLeftDrive.setTargetPosition(movePosition);
+            _robot.FrontRightDrive.setTargetPosition(movePosition);
+            _robot.BackLeftDrive.setTargetPosition(movePosition);
+            _robot.BackRightDrive.setTargetPosition(movePosition);
+
+            double currentPosition = _robot.FrontLeftDrive.getCurrentPosition();
+            double targetPosition = currentPosition + movePosition;
+
+            if (currentPosition > targetPosition) {
+                _robot.FrontLeftDrive.setPower(-_driveSpeed);
+                _robot.FrontLeftDrive.setPower(-_driveSpeed);
+            }
+
+            if (currentPosition < targetPosition) {
+                _robot.FrontLeftDrive.setPower(_driveSpeed);
+                _robot.FrontLeftDrive.setPower(_driveSpeed);
+            }
+
+            telemetry.addData("Distance Travelled", currentPosition);
+            telemetry.addData("Drive Target Position", targetPosition);
+        }
     }
     private void SetLiftPosition(double newPosition, double timeOut) {
         if (!opModeIsActive()) {

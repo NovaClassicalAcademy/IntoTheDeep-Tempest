@@ -17,9 +17,9 @@ public class AutonomousMKIII extends LinearOpMode {
         _robot.Init(hardwareMap);
 
         telemetry.addData("Initialization", "Started");
-        InitializeLiftPosition();
-        InitializeHingeAndClawsPosition();
-        InitializeGripper();
+//        InitializeLiftPosition();
+//        InitializeHingeAndClawsPosition();
+//        InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
         telemetry.addData("Front Left Drive", _robot.FrontLeftDrive.getCurrentPosition());
@@ -31,7 +31,7 @@ public class AutonomousMKIII extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        Test3();
+//        Test3();
     }
 
     private void Test3() {
