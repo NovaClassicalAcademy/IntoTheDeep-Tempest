@@ -200,6 +200,10 @@ public class AutonomousMKIV extends LinearOpMode {
             telemetry.addData("Drive Target Position", targetPosition);
         }
     }
+    
+    private void Turn2(){
+        
+    }
     private void SetLiftPosition(double newPosition, double timeOut) {
         if (!opModeIsActive()) {
             return;
