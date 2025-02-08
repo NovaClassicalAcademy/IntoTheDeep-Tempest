@@ -313,8 +313,8 @@ int LiftPower = 8;
 
     //hinge up
     if (gamepad2.left_trigger > 0.2) {
-      ServoHingeRight.setPosition(0.350);
-      ServoHingeLeft.setPosition(0.9);//CHECK THIS OUT GOTTA UPLOAD NEW POS
+      ServoHingeRight.setPosition(0.305);
+      ServoHingeLeft.setPosition(0.945);//CHECK THIS OUT GOTTA UPLOAD NEW POS
       ServoPitch.setPosition(0.2);
       ServoRoll.setPosition(0.5);
 
