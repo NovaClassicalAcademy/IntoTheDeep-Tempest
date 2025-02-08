@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -12,11 +13,13 @@ public class HardwareRobot {
     public DcMotor BackLeftDrive = null;
     public DcMotor BackRightDrive = null;
     public DcMotor YEncoderWheel = null;
+    public DcMotor XEncoderWheel = null;
     public DcMotor LeftLiftMotor = null;
     public DcMotor RightLiftMotor = null;
     public Servo DumpBucketServo = null;
-    public Servo LeftClawServo = null;
-    public Servo RightClawServo = null;
+    public Servo ServoRoll = null;
+    public Servo ServoPitch = null;
+    public Servo ServoClaw = null;
     public Servo GripperServo = null;
     public Servo LeftHingeServo = null;
     public Servo RightHingeServo = null;
@@ -53,9 +56,13 @@ public class HardwareRobot {
         BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        YEncoderWheel = hardwareMap.get(DcMotor.class, "EncoderWheel");
+        YEncoderWheel = hardwareMap.get(DcMotor.class, "YEncoderWheel");
         YEncoderWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         YEncoderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        XEncoderWheel = hardwareMap.get(DcMotor.class, "XEncoderWheel");
+        XEncoderWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        XEncoderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         LeftLiftMotor = hardwareMap.get(DcMotor.class, "LiftLeft");
         RightLiftMotor = hardwareMap.get(DcMotor.class, "LiftRight");
@@ -72,8 +79,9 @@ public class HardwareRobot {
         RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         DumpBucketServo = hardwareMap.get(Servo.class, "ServoDump");
-        LeftClawServo = hardwareMap.get(Servo.class, "ServoClawLeft");
-        RightClawServo = hardwareMap.get(Servo.class, "ServoClawRight");
+        ServoRoll = hardwareMap.get(Servo.class, "WristRoll");
+        ServoPitch = hardwareMap.get(Servo.class, "WristPitch");
+        ServoClaw = hardwareMap.get(Servo.class, "WristClaw");
 
         GripperServo = hardwareMap.get(Servo.class, "ServoGrip");
 

@@ -3,22 +3,21 @@ package org.firstinspires.ftc.teamcode.Autonomy;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@Autonomous (name = "Rei Auto Run MKIII", group = "Rei")
-public class AutonomousMKIV extends LinearOpMode {
+@Autonomous (name = "Rei Auto Run MKN", group = "Rei")
+public class AutonomousMKN extends LinearOpMode {
     HardwareRobot _robot = new HardwareRobot();
 
-    final double _driveSpeed = 0.3;
-    final double _turnSpeed = 0.08;
-    final double _liftPower = 5.0;
+    final double _driveSpeed = 0.2;
+    final double _turnSpeed = 0.05;
+    final double _liftPower = 3.0;
 
     @Override
     public void runOpMode() {
         _robot.Init(hardwareMap);
 
         telemetry.addData("Initialization", "Started");
-        InitializeLiftPosition();
-        InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
         telemetry.addData("Front Left Drive", _robot.FrontLeftDrive.getCurrentPosition());
@@ -30,60 +29,11 @@ public class AutonomousMKIV extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-//        Test3();
-        TestAsync();
-    }
 
-//    private void Test3() {
-//
-//        long servoWaitTime = 500;
-//
-//        MoveForwardBackWards(-2, 2);
-//        SetLiftPosition(2900, 7);
-//        Dump();
-//        sleep(servoWaitTime);
-//        RetractDump();
-//        sleep(servoWaitTime);
-//        MoveForwardBackWards(2, 2);
-//        RetractLiftPositionAsync(10, 2);
-//        Turn(-76, 3);
-//        sleep(servoWaitTime);
-//        MoveForwardBackWards(5, 5);
-//        LowerHinge();
-//        sleep(servoWaitTime);
-//        MoveForwardBackWards(2, 5);
-//        CloseClaw();
-//        sleep(servoWaitTime);
-//        LiftHinge();
-//        sleep(servoWaitTime);
-//        OpenClaw();
-//        sleep(servoWaitTime);
-//        Turn(51, 3);
-//        sleep(servoWaitTime);
-//        MoveForwardBackWards(-4, 2);
-//        SetLiftPosition(2900, 7);
-//        Dump();
-//        sleep(servoWaitTime);
-//        RetractDump();
-//        sleep(servoWaitTime);
-//        MoveForwardBackWards(2, 2);
-//        RetractLiftPositionAsync(10, 2);
-//        Turn(-68, 3);
-//        sleep(servoWaitTime);
-//        LowerHinge();
-//        sleep(servoWaitTime);
-//        MoveForwardBackWards(1, 1);
-//        CloseClaw();
-//        sleep(servoWaitTime);
-//        LiftHinge();
-//        sleep(servoWaitTime);
-//        OpenClaw();
-//    }
-
-    private void TestAsync(){
-        SetLiftPosition(2900, 7);
-        RetractLiftPositionAsync(0, 2);
     }
+//    private void Park() {
+//        MoveForwardBackWards(-5, 3);
+
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
             return;
@@ -147,69 +97,74 @@ public class AutonomousMKIV extends LinearOpMode {
         _robot.BackRightDrive.setPower(0.0);
     }
 
-    private void RetractLiftPositionAsync(int newLiftPosition, int movePosition) {
+    private void StrafeLeftRight(double moveInches, double timeOut){
         if (!opModeIsActive()) {
-            return;
-        }
-
-        _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        _robot.LeftLiftMotor.setTargetPosition(newLiftPosition);
-        _robot.RightLiftMotor.setTargetPosition(newLiftPosition);
-
-        double currLiftPosition = _robot.LeftLiftMotor.getCurrentPosition();
-
-        if (newLiftPosition < currLiftPosition){
-
-            _robot.LeftLiftMotor.setPower(-_liftPower);
-            _robot.RightLiftMotor.setPower(-_liftPower);
-        }
-
-        telemetry.addData("Current Lift Position", _robot.RightLiftMotor.getCurrentPosition());
-        telemetry.addData("Target Lift Position", newLiftPosition);
-        telemetry.update();
-
-        while (_robot.LeftLiftMotor.isBusy() && _robot.RightLiftMotor.isBusy()) {
-
-            _robot.FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            _robot.FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            _robot.BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            _robot.BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            _robot.FrontLeftDrive.setTargetPosition(movePosition);
-            _robot.FrontRightDrive.setTargetPosition(movePosition);
-            _robot.BackLeftDrive.setTargetPosition(movePosition);
-            _robot.BackRightDrive.setTargetPosition(movePosition);
-
-            double currentPosition = _robot.FrontLeftDrive.getCurrentPosition();
-            double targetPosition = currentPosition + movePosition;
-
-            if (currentPosition > targetPosition) {
-                _robot.FrontLeftDrive.setPower(-_driveSpeed);
-                _robot.FrontLeftDrive.setPower(-_driveSpeed);
-            }
-
-            if (currentPosition < targetPosition) {
-                _robot.FrontLeftDrive.setPower(_driveSpeed);
-                _robot.FrontLeftDrive.setPower(_driveSpeed);
-            }
-
-            telemetry.addData("Distance Travelled", currentPosition);
-            telemetry.addData("Drive Target Position", targetPosition);
-        }
+        return;
     }
-    
-    private void Turn2(){
-        
+
+        _robot.XEncoderWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _robot.XEncoderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        int moveTicks = ConvertInchesToTicks(moveInches);
+        double currentPosition = _robot.XEncoderWheel.getCurrentPosition();
+        double targetPosition = currentPosition + moveTicks;
+
+        double startTime = getRuntime();
+        double runTime;
+
+        if (moveInches < 0) { //Which way is this? should be left
+            _robot.FrontLeftDrive.setPower(-_driveSpeed);
+            _robot.FrontRightDrive.setPower(_driveSpeed);
+            _robot.BackLeftDrive.setPower(-_driveSpeed);
+            _robot.BackRightDrive.setPower(_driveSpeed);
+
+            while (currentPosition > targetPosition) {
+
+                runTime = getRuntime() - startTime;
+                currentPosition = _robot.XEncoderWheel.getCurrentPosition();
+
+                if (runTime > timeOut) { break; }
+
+                telemetry.addData("Time Out Time", timeOut);
+                telemetry.addData("Elapse Time", runTime);
+                telemetry.addData("Distance travelled", currentPosition);
+                telemetry.addData("Target Position", targetPosition);
+                telemetry.addData("Move Ticks", moveTicks);
+                telemetry.update();
+            }
+        } else if (moveInches > 0) { //should be right
+            _robot.FrontLeftDrive.setPower(_driveSpeed);
+            _robot.FrontRightDrive.setPower(-_driveSpeed);
+            _robot.BackLeftDrive.setPower(_driveSpeed);
+            _robot.BackRightDrive.setPower(-_driveSpeed);
+
+            while (currentPosition < targetPosition) {
+
+                runTime = getRuntime() - startTime;
+                currentPosition = _robot.XEncoderWheel.getCurrentPosition();
+
+                if (runTime > timeOut) { break; }
+
+                telemetry.addData("Time Out Time", timeOut);
+                telemetry.addData("Elapse Time", runTime);
+                telemetry.addData("Distance travelled", currentPosition);
+                telemetry.addData("Target Position", targetPosition);
+                telemetry.addData("Move Ticks", moveTicks);
+                telemetry.update();
+            }
+        }
+
+        _robot.FrontLeftDrive.setPower(0.0);
+        _robot.FrontRightDrive.setPower(0.0);
+        _robot.BackLeftDrive.setPower(0.0);
+        _robot.BackRightDrive.setPower(0.0);
+
     }
+
     private void SetLiftPosition(double newPosition, double timeOut) {
         if (!opModeIsActive()) {
             return;
         }
-
-        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         double currPosition = _robot.RightLiftMotor.getCurrentPosition() * -1;
         double positionDifference = 2900 - newPosition;
@@ -333,72 +288,24 @@ public class AutonomousMKIV extends LinearOpMode {
         _robot.BackRightDrive.setPower(0.0);
     }
 
-    private void Dump() {
-        double endPosition = 0.25;
-
-        _robot.DumpBucketServo.setPosition(endPosition);
-
-        while (_robot.DumpBucketServo.getPosition() != endPosition) {
-
-            telemetry.addData("Dump Rotation", _robot.DumpBucketServo.getPosition());
-            telemetry.update();
-        }
-    }
-
-    private void RetractDump() {
-        double endPosition = 1;
-
-        _robot.DumpBucketServo.setPosition(endPosition);
-
-        while (_robot.DumpBucketServo.getPosition() != endPosition) {
-
-            telemetry.addData("Dump Rotation", _robot.DumpBucketServo.getPosition());
-            telemetry.update();
-        }
-    }
-//
-//    private void OpenClaw() {
-//        _robot.LeftClawServo.setPosition(0.0);
-//        _robot.RightClawServo.setPosition(1.0);
-//
-//        while (_robot.LeftClawServo.getPosition() != 0.0 && _robot.RightClawServo.getPosition() != 1.0) {
-//
-//            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
-//            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
-//            telemetry.update();
-//        }
-//    }
-//
-//    private void CloseClaw() {
-//        _robot.LeftClawServo.setPosition(0.44);
-//        _robot.RightClawServo.setPosition(0.56);
-//
-//        while (_robot.LeftClawServo.getPosition() != 0.44 && _robot.RightClawServo.getPosition() != 0.56) {
-//
-//            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
-//            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
-//            telemetry.update();
-//        }
-//    }
-
     private void OpenGripper() {
-        _robot.GripperServo.setPosition(0.6);
+        _robot.GripperServo.setPosition(0.15);
         sleep(250);
     }
 
     private void CloseGripper() {
-        _robot.GripperServo.setPosition(0.8);
+        _robot.GripperServo.setPosition(0.85);
         sleep(250);
     }
 
     private void LiftHinge() {
-        _robot.LeftHingeServo.setPosition(1.0);
-        _robot.RightHingeServo.setPosition(0.25);
+        _robot.LeftHingeServo.setPosition(0.9);
+        _robot.RightHingeServo.setPosition(0.350);
     }
 
     private void LowerHinge() {
-        _robot.LeftHingeServo.setPosition(0.675);
-        _robot.RightHingeServo.setPosition(0.575);
+        _robot.LeftHingeServo.setPosition(0.665);
+        _robot.RightHingeServo.setPosition(0.585);
     }
 
     private int ConvertInchesToTicks(double inches) {
@@ -407,46 +314,7 @@ public class AutonomousMKIV extends LinearOpMode {
 
         double circumference = encoderDiameter * Math.PI;
         double rotations = 1 / circumference;
-        int ticks = (int)Math.floor(rotations * inches * encoderTicksPerRotation);
-        return  ticks;
-    }
-
-    private void InitializeLiftPosition() {
-        _robot.LeftLiftMotor.setPower(0.05);
-        _robot.RightLiftMotor.setPower(0.05);
-
-        sleep(1000);
-
-        _robot.LeftLiftMotor.setPower(0);
-        _robot.RightLiftMotor.setPower(0);
-
-        sleep(1000);
-
-        _robot.LeftLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        _robot.RightLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-//
-//    private void InitializeHingeAndClawsPosition(){
-//        LiftHinge();
-//        OpenClaw();
-//        sleep(1000);
-//        CloseClaw();
-//        sleep(1000);
-//        OpenClaw();
-//        sleep(1000);
-//    }
-
-    private void InitializeGripper(){
-        OpenGripper();
-        sleep(1000);
-        CloseGripper();
-        sleep(1000);
-        OpenGripper();
-        sleep(1000);
-        CloseGripper();
-        sleep(1000);
+        int ticks = (int) Math.floor(rotations * inches * encoderTicksPerRotation);
+        return ticks;
     }
 }

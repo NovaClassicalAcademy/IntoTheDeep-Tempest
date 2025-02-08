@@ -33,50 +33,50 @@ public class AutonomousMKIII extends LinearOpMode {
         waitForStart();
 //        Test3();
     }
-
-    private void Test3() {
-        MoveForwardBackWards(-2, 2);
-        SetLiftPosition(2900, 7);
-        Dump();
-        sleep(1000);
-        RetractDump();
-        sleep(1000);
-        MoveForwardBackWards(2, 2);
-        SetLiftPosition(0, 7);
-        Turn(-76, 3);
-        sleep(1000);
-        MoveForwardBackWards(5, 5);
-        LowerHinge();
-        sleep(1000);
-        MoveForwardBackWards(2, 5);
-        CloseClaw();
-        sleep(1000);
-        LiftHinge();
-        sleep(1000);
-        OpenClaw();
-        sleep(1000);
-        Turn(51, 3);
-        sleep(1000);
-        MoveForwardBackWards(-4, 2);
-        SetLiftPosition(2900, 7);
-        Dump();
-        sleep(1000);
-        RetractDump();
-        sleep(1000);
-        MoveForwardBackWards(2, 2);
-        SetLiftPosition(0, 7);
-        Turn(-68, 3);
-        sleep(1000);
-        LowerHinge();
-        sleep(1000);
-        MoveForwardBackWards(1, 1);
-        CloseClaw();
-        sleep(1000);
-        LiftHinge();
-        sleep(1000);
-        OpenClaw();
-        sleep(1000);
-    }
+//
+//    private void Test3() {
+//        MoveForwardBackWards(-2, 2);
+//        SetLiftPosition(2900, 7);
+//        Dump();
+//        sleep(1000);
+//        RetractDump();
+//        sleep(1000);
+//        MoveForwardBackWards(2, 2);
+//        SetLiftPosition(0, 7);
+//        Turn(-76, 3);
+//        sleep(1000);
+//        MoveForwardBackWards(5, 5);
+//        LowerHinge();
+//        sleep(1000);
+//        MoveForwardBackWards(2, 5);
+//        CloseClaw();
+//        sleep(1000);
+//        LiftHinge();
+//        sleep(1000);
+//        OpenClaw();
+//        sleep(1000);
+//        Turn(51, 3);
+//        sleep(1000);
+//        MoveForwardBackWards(-4, 2);
+//        SetLiftPosition(2900, 7);
+//        Dump();
+//        sleep(1000);
+//        RetractDump();
+//        sleep(1000);
+//        MoveForwardBackWards(2, 2);
+//        SetLiftPosition(0, 7);
+//        Turn(-68, 3);
+//        sleep(1000);
+//        LowerHinge();
+//        sleep(1000);
+//        MoveForwardBackWards(1, 1);
+//        CloseClaw();
+//        sleep(1000);
+//        LiftHinge();
+//        sleep(1000);
+//        OpenClaw();
+//        sleep(1000);
+//    }
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
             return;
@@ -290,30 +290,30 @@ public class AutonomousMKIII extends LinearOpMode {
             telemetry.update();
         }
     }
-
-    private void OpenClaw() {
-        _robot.LeftClawServo.setPosition(0.0);
-        _robot.RightClawServo.setPosition(1.0);
-
-        while (_robot.LeftClawServo.getPosition() != 0.0 && _robot.RightClawServo.getPosition() != 1.0) {
-
-            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
-            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
-            telemetry.update();
-        }
-    }
-
-    private void CloseClaw() {
-        _robot.LeftClawServo.setPosition(0.44);
-        _robot.RightClawServo.setPosition(0.56);
-
-        while (_robot.LeftClawServo.getPosition() != 0.44 && _robot.RightClawServo.getPosition() != 0.56) {
-
-            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
-            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
-            telemetry.update();
-        }
-    }
+//
+//    private void OpenClaw() {
+//        _robot.LeftClawServo.setPosition(0.0);
+//        _robot.RightClawServo.setPosition(1.0);
+//
+//        while (_robot.LeftClawServo.getPosition() != 0.0 && _robot.RightClawServo.getPosition() != 1.0) {
+//
+//            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
+//            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
+//            telemetry.update();
+//        }
+//    }
+//
+//    private void CloseClaw() {
+//        _robot.LeftClawServo.setPosition(0.44);
+//        _robot.RightClawServo.setPosition(0.56);
+//
+//        while (_robot.LeftClawServo.getPosition() != 0.44 && _robot.RightClawServo.getPosition() != 0.56) {
+//
+//            telemetry.addData("Left Claw Rotation", _robot.LeftClawServo.getPosition());
+//            telemetry.addData("Right Claw Rotation", _robot.RightClawServo.getPosition());
+//            telemetry.update();
+//        }
+//    }
 
     private void OpenGripper() {
         _robot.GripperServo.setPosition(0.6);
@@ -362,15 +362,15 @@ public class AutonomousMKIII extends LinearOpMode {
         _robot.LeftLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         _robot.RightLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
-    private void InitializeHingeAndClawsPosition(){
-        LiftHinge();
-        OpenClaw();
-        sleep(1000);
-        CloseClaw();
-        sleep(1000);
-        OpenClaw();
-    }
+//
+//    private void InitializeHingeAndClawsPosition(){
+//        LiftHinge();
+//        OpenClaw();
+//        sleep(1000);
+//        CloseClaw();
+//        sleep(1000);
+//        OpenClaw();
+//    }
 
     private void InitializeGripper(){
         OpenGripper();

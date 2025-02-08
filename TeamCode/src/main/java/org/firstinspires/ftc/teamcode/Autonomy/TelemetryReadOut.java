@@ -26,8 +26,6 @@ public class TelemetryReadOut extends LinearOpMode {
             telemetry.addData("L Lift Position", _robot.LeftLiftMotor.getCurrentPosition());
             telemetry.addData("R Lift Position", _robot.RightLiftMotor.getCurrentPosition());
             telemetry.addData("Gripper Position", _robot.GripperServo.getPosition());
-            telemetry.addData("R Claw Position", _robot.RightClawServo.getPosition());
-            telemetry.addData("L Claw Position", _robot.LeftClawServo.getPosition());
             telemetry.addData("R Hinge Position", _robot.RightHingeServo.getPosition());
             telemetry.addData("L Hinge Position", _robot.LeftHingeServo.getPosition());
             telemetry.addData("Lift Position", _robot.LeftLiftMotor.getCurrentPosition());

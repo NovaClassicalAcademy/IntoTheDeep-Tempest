@@ -19,7 +19,6 @@ public class AutonomousMKII extends LinearOpMode {
 
         telemetry.addData("Initialization", "Started");
         InitializeLiftPosition();
-        InitializeHingeAndClawsPosition();
         InitializeGripper();
 
         telemetry.addData("Initialization", "Complete");
@@ -32,52 +31,51 @@ public class AutonomousMKII extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        Test();
     }
 
-    private void Test() {
-        MoveForwardBackWards(-2, 2);
-        SetLiftPosition(2900, 7);
-        Dump();
-        sleep(1000);
-        RetractDump();
-        sleep(1000);
-        MoveForwardBackWards(2, 2);
-        SetLiftPosition(0, 7);
-        Turn(-76, 3);
-        sleep(1000);
-        MoveForwardBackWards(5, 5);
-        LowerHinge();
-        sleep(1000);
-        MoveForwardBackWards(2, 5);
-        CloseClaw();
-        sleep(1000);
-        LiftHinge();
-        sleep(1000);
-        OpenClaw();
-        sleep(1000);
-        Turn(51, 3);
-        sleep(1000);
-        MoveForwardBackWards(-4, 2);
-        SetLiftPosition(2900, 7);
-        Dump();
-        sleep(1000);
-        RetractDump();
-        sleep(1000);
-        MoveForwardBackWards(2, 2);
-        SetLiftPosition(0, 7);
-        Turn(-68, 3);
-        sleep(1000);
-        LowerHinge();
-        sleep(1000);
-        MoveForwardBackWards(1, 1);
-        CloseClaw();
-        sleep(1000);
-        LiftHinge();
-        sleep(1000);
-        OpenClaw();
-        sleep(1000);
-    }
+//    private void Test() {
+//        MoveForwardBackWards(-2, 2);
+//        SetLiftPosition(2900, 7);
+//        Dump();
+//        sleep(1000);
+//        RetractDump();
+//        sleep(1000);
+//        MoveForwardBackWards(2, 2);
+//        SetLiftPosition(0, 7);
+//        Turn(-76, 3);
+//        sleep(1000);
+//        MoveForwardBackWards(5, 5);
+//        LowerHinge();
+//        sleep(1000);
+//        MoveForwardBackWards(2, 5);
+//        CloseClaw();
+//        sleep(1000);
+//        LiftHinge();
+//        sleep(1000);
+//        OpenClaw();
+//        sleep(1000);
+//        Turn(51, 3);
+//        sleep(1000);
+//        MoveForwardBackWards(-4, 2);
+//        SetLiftPosition(2900, 7);
+//        Dump();
+//        sleep(1000);
+//        RetractDump();
+//        sleep(1000);
+//        MoveForwardBackWards(2, 2);
+//        SetLiftPosition(0, 7);
+//        Turn(-68, 3);
+//        sleep(1000);
+//        LowerHinge();
+//        sleep(1000);
+//        MoveForwardBackWards(1, 1);
+//        CloseClaw();
+//        sleep(1000);
+//        LiftHinge();
+//        sleep(1000);
+//        OpenClaw();
+//        sleep(1000);
+//    }
 
     private void MoveForwardBackWards(double moveInches, double timeOut) {
         if (!opModeIsActive()) {
@@ -255,18 +253,18 @@ public class AutonomousMKII extends LinearOpMode {
         _robot.DumpBucketServo.setPosition(1);
         sleep(_sleepTime);
     }
-
-    private void OpenClaw() {
-        _robot.LeftClawServo.setPosition(0.0);
-        _robot.RightClawServo.setPosition(1.0);
-        sleep(_sleepTime);
-    }
-
-    private void CloseClaw() {
-        _robot.LeftClawServo.setPosition(0.44);
-        _robot.RightClawServo.setPosition(0.56);
-        sleep(_sleepTime);
-    }
+//
+//    private void OpenClaw() {
+//        _robot.LeftClawServo.setPosition(0.0);
+//        _robot.RightClawServo.setPosition(1.0);
+//        sleep(_sleepTime);
+//    }
+//
+//    private void CloseClaw() {
+//        _robot.LeftClawServo.setPosition(0.44);
+//        _robot.RightClawServo.setPosition(0.56);
+//        sleep(_sleepTime);
+//    }
 
     private void OpenGripper() {
         _robot.GripperServo.setPosition(0.6);
@@ -351,15 +349,15 @@ public class AutonomousMKII extends LinearOpMode {
         _robot.BackLeftDrive.setPower(0.0);
         _robot.BackRightDrive.setPower(0.0);
     }
-    private void InitializeHingeAndClawsPosition(){
-        LiftHinge();
-        OpenClaw();
-        sleep(1000);
-        CloseClaw();
-        sleep(1000);
-        OpenClaw();
-        sleep(1000);
-    }
+//    private void InitializeHingeAndClawsPosition(){
+//        LiftHinge();
+//        OpenClaw();
+//        sleep(1000);
+//        CloseClaw();
+//        sleep(1000);
+//        OpenClaw();
+//        sleep(1000);
+//    }
 
     private void InitializeGripper(){
         OpenGripper();
